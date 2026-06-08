@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login — Sri Telugu Classes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-icon telugu">శ్రీ</div>
+      <h2>Student Login</h2>
+      <p>Sri Telugu Classes · Student Portal</p>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   id="errorAlert"></div>
+    <div class="alert alert-success" id="successAlert"></div>
+
+    <!-- Form -->
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="student@example.com"
+               required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password"
+               required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg"
+              style="width:100%;" id="loginBtn">
+        Sign In →
+      </button>
+    </form>
+
+    <!-- Back link -->
+    <div class="auth-footer">
+      <a href="index.html">← Back to Home</a>
+    </div>
+
+    <!-- Demo hint -->
+    <div class="demo-hint">
+      <strong>Demo credentials:</strong><br>
+      Email: student@example.com<br>
+      Password: telugu123
+    </div>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Already logged in → go straight to dashboard
+  if (getSession()) {
+    window.location.href = 'dashboard.html';
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var email    = document.getElementById('email').value.trim();
+    var password = document.getElementById('password').value;
+    var errEl    = document.getElementById('errorAlert');
+    var okEl     = document.getElementById('successAlert');
+    var btn      = document.getElementById('loginBtn');
+
+    errEl.style.display = 'none';
+    okEl.style.display  = 'none';
+
+    if (!email || !password) {
+      errEl.textContent    = 'Please enter your email and password.';
+      errEl.style.display  = 'block';
+      return;
+    }
+
+    btn.textContent = 'Signing in…';
+    btn.disabled    = true;
+
+    // Small delay so the button feedback is visible
+    setTimeout(function() {
+      var result = loginStudent(email, password);
+      if (result.success) {
+        okEl.textContent   = 'Welcome back, ' + result.student.name + '! Redirecting…';
+        okEl.style.display = 'block';
+        setTimeout(function() { window.location.href = 'dashboard.html'; }, 900);
+      } else {
+        errEl.textContent   = result.message;
+        errEl.style.display = 'block';
+        btn.textContent = 'Sign In →';
+        btn.disabled    = false;
+      }
+    }, 500);
+  });
+</script>
+</body>
+</html>

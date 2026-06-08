@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Sri Telugu Classes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Mobile overlay (closes sidebar when tapped) -->
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="dashboard-layout">
+
+  <!-- ════════ SIDEBAR ════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-icon telugu">శ్రీ</div>
+      <div class="sidebar-logo-text">
+        Sri Telugu
+        <small>Student Portal</small>
+      </div>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="#" class="active">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="#schedule" onclick="closeSidebar()">
+          <span class="nav-icon">📅</span> Schedule
+        </a>
+      </li>
+      <li>
+        <a href="#notices" onclick="closeSidebar()">
+          <span class="nav-icon">📢</span> Notices
+        </a>
+      </li>
+      <li>
+        <a href="index.html">
+          <span class="nav-icon">🏫</span> School Home
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebarAvatar">AR</div>
+        <div>
+          <div class="user-name"  id="sidebarName">Arjun Reddy</div>
+          <div class="user-batch" id="sidebarBatch">Batch B</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logoutStudent()">Sign Out</button>
+    </div>
+
+  </aside>
+
+  <!-- ════════ MAIN CONTENT ════════ -->
+  <main class="dashboard-main">
+
+    <!-- Mobile top bar -->
+    <div class="topbar">
+      <button class="btn-menu" id="menuBtn" aria-label="Open menu">☰</button>
+      <div class="topbar-title">Dashboard</div>
+      <button onclick="logoutStudent()"
+              style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:.82rem;font-weight:600;">
+        Sign out
+      </button>
+    </div>
+
+    <!-- Welcome header -->
+    <div class="dash-header">
+      <h1 id="welcomeMsg">Welcome! 👋</h1>
+      <p id="welcomeSub">Loading…</p>
+    </div>
+
+    <!-- Attendance stat cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:rgba(83,74,183,.1);">📚</div>
+        <div class="stat-card-value" id="statTotal">—</div>
+        <div class="stat-card-label">Total Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:rgba(29,158,117,.1);">✅</div>
+        <div class="stat-card-value" id="statAttended">—</div>
+        <div class="stat-card-label">Attended</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:rgba(245,158,11,.1);">🔮</div>
+        <div class="stat-card-value" id="statUpcoming">—</div>
+        <div class="stat-card-label">Upcoming</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background:rgba(83,74,183,.12);">📊</div>
+        <div class="stat-card-value" id="statPct">—</div>
+        <div class="stat-card-label">Attendance %</div>
+      </div>
+    </div>
+
+    <!-- Schedule panel -->
+    <div class="panel" id="schedule">
+      <h2>📅 This Week's Schedule</h2>
+      <div class="schedule-list" id="scheduleList">
+        <p style="color:var(--text-muted);font-size:.88rem;">Loading schedule…</p>
+      </div>
+    </div>
+
+    <!-- Notice board -->
+    <div class="panel" id="notices">
+      <h2>📢 Notices &amp; Announcements</h2>
+      <div id="noticesList">
+        <p style="color:var(--text-muted);font-size:.88rem;">Loading notices…</p>
+      </div>
+    </div>
+
+  </main>
+</div><!-- end .dashboard-layout -->
+
+<script src="app.js"></script>
+<script>
+  // ── Auth guard ──────────────────────────────────────
+  var session = getSession();
+  if (!session) { window.location.href = 'login.html'; }
+
+  // ── Populate page ───────────────────────────────────
+  var now  = new Date();
+  var hour = now.getHours();
+  var greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  var dateStr  = now.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  document.getElementById('welcomeMsg').textContent  = greeting + ', ' + session.name.split(' ')[0] + '! 👋';
+  document.getElementById('welcomeSub').textContent  = session.batch + '  ·  ' + session.level + ' Level  ·  ' + dateStr;
+
+  // Sidebar
+  document.getElementById('sidebarAvatar').textContent = session.avatar;
+  document.getElementById('sidebarName').textContent   = session.name;
+  document.getElementById('sidebarBatch').textContent  = session.batch;
+
+  // Attendance cards
+  var att = session.attendance;
+  document.getElementById('statTotal').textContent    = att.total;
+  document.getElementById('statAttended').textContent = att.attended;
+  document.getElementById('statUpcoming').textContent = att.upcoming;
+  document.getElementById('statPct').textContent      = Math.round((att.attended / att.total) * 100) + '%';
+
+  // Schedule & notices
+  buildSchedule(session.schedule);
+  buildNotices(session.notices);
+
+  // ── Mobile sidebar ──────────────────────────────────
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  var menuBtn = document.getElementById('menuBtn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+
+  menuBtn.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>
