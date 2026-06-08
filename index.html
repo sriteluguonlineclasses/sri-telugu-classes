@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sri Telugu Classes — Learn Telugu Online</title>
-  <meta name="description" content="Online Telugu language and culture school for kids and adults. Live classes, interactive lessons, and deep cultural immersion.">
+  <meta name="description" content="Online Telugu language school for kids and adults. Live classes, expert teachers, cultural immersion — anywhere in the world.">
+  <meta property="og:title" content="Sri Telugu Classes — Learn Telugu Online">
+  <meta property="og:description" content="Live Telugu classes for kids and adults. Expert teachers, interactive lessons, real results.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sri-telugu-classes.netlify.app">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,18 +16,17 @@
 </head>
 <body>
 
+<a href="#main" class="skip-link">Skip to content</a>
+
 <!-- ════════ NAVBAR ════════ -->
-<nav class="navbar" id="navbar">
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
   <a href="index.html" class="logo">
     <div class="logo-icon telugu">శ్రీ</div>
-    <div>
-      <div>Sri Telugu Classes</div>
-    </div>
+    <div>Sri Telugu Classes</div>
   </a>
 
   <ul class="nav-links" id="navLinks">
     <li><a href="#courses">Courses</a></li>
-    <li><a href="#culture">Culture</a></li>
     <li><a href="#testimonials">Reviews</a></li>
     <li><a href="#enroll">Contact</a></li>
   </ul>
@@ -31,19 +34,29 @@
   <div class="nav-actions">
     <a href="login.html" class="btn btn-outline">Student Login</a>
     <a href="#enroll" class="btn btn-primary">Enroll Now</a>
-    <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
 <!-- ════════ HERO ════════ -->
-<section class="hero">
+<section class="hero" id="main">
+
+  <!-- Floating Telugu background characters -->
+  <div class="hero-bg-chars" aria-hidden="true">
+    <span class="hero-char telugu">అ</span>
+    <span class="hero-char telugu">ఆ</span>
+    <span class="hero-char telugu">తె</span>
+    <span class="hero-char telugu">లు</span>
+    <span class="hero-char telugu">గు</span>
+    <span class="hero-char telugu">శ్రీ</span>
+  </div>
+
   <div class="hero-content">
-    <div class="hero-badge">✨ Trusted by 500+ Students Worldwide</div>
-    <h1>Learn Telugu with Heart &amp; Culture</h1>
+    <h1>Learn Telugu with<br>Heart &amp; Culture</h1>
     <span class="hero-telugu telugu">శ్రీ తెలుగు తరగతులు</span>
-    <p>Master the beautiful Telugu language through interactive live classes, cultural stories, and expert teachers — for kids and adults, anywhere in the world.</p>
+    <p>Master the beautiful Telugu language through interactive live classes and expert teachers — for kids and adults, anywhere in the world.</p>
     <div class="hero-actions">
       <a href="#enroll" class="btn btn-accent btn-lg">Start Learning Today</a>
       <a href="#courses" class="btn btn-ghost btn-lg">Explore Courses</a>
@@ -52,7 +65,7 @@
 </section>
 
 <!-- ════════ STATS BAR ════════ -->
-<div class="stats-bar">
+<div class="stats-bar" role="region" aria-label="Key stats">
   <div class="stat-item">
     <span class="stat-number">500+</span>
     <span class="stat-label">Students</span>
@@ -72,113 +85,76 @@
 </div>
 
 <!-- ════════ COURSES ════════ -->
-<section class="section" id="courses">
+<section class="section" id="courses" aria-labelledby="courses-title">
   <div class="section-header">
     <div class="section-tag">Our Courses</div>
-    <h2 class="section-title">Everything You Need to Master Telugu</h2>
+    <h2 class="section-title" id="courses-title">Everything you need to master Telugu</h2>
     <p class="section-subtitle">From absolute beginners to advanced speakers — a course tailored for every level and age group.</p>
   </div>
 
   <div class="courses-grid">
 
     <div class="course-card">
-      <div class="course-icon" style="background:rgba(83,74,183,.1);">📚</div>
-      <h3>Telugu Basics</h3>
-      <p>Learn the Telugu alphabet (అ ఆ ఇ ఈ…), basic vocabulary, numbers, and simple everyday sentences from scratch.</p>
-      <div class="course-meta">
-        <span>📅 12 weeks</span>
-        <span>👤 Beginner</span>
+      <div class="course-card-bar"></div>
+      <div class="course-card-body">
+        <div class="course-icon" style="background:rgba(83,74,183,.1);">📚</div>
+        <h3>Telugu Basics</h3>
+        <p>Learn the Telugu alphabet (అ ఆ ఇ ఈ…), basic vocabulary, numbers, and simple everyday sentences from scratch.</p>
+        <div class="course-meta">
+          <span>👤 Beginner</span>
+        </div>
+        <a href="#enroll" class="btn btn-primary btn-sm">Enroll →</a>
       </div>
-      <a href="#enroll" class="btn btn-primary">Enroll →</a>
     </div>
 
     <div class="course-card">
-      <div class="course-icon" style="background:rgba(29,158,117,.1);">✍️</div>
-      <h3>Reading &amp; Writing</h3>
-      <p>Master Telugu script with reading fluency, handwriting practice, and structured grammar lessons.</p>
-      <div class="course-meta">
-        <span>📅 16 weeks</span>
-        <span>👤 Beginner+</span>
+      <div class="course-card-bar"></div>
+      <div class="course-card-body">
+        <div class="course-icon" style="background:rgba(29,158,117,.1);">✍️</div>
+        <h3>Reading &amp; Writing</h3>
+        <p>Master Telugu script with reading fluency, handwriting practice, and structured grammar lessons.</p>
+        <div class="course-meta">
+          <span>👤 Beginner+</span>
+        </div>
+        <a href="#enroll" class="btn btn-primary btn-sm">Enroll →</a>
       </div>
-      <a href="#enroll" class="btn btn-primary">Enroll →</a>
     </div>
 
     <div class="course-card">
-      <div class="course-icon" style="background:rgba(245,158,11,.1);">🗣️</div>
-      <h3>Spoken Telugu</h3>
-      <p>Build confidence in daily conversation, idioms, and fluent speaking with live peer practice sessions.</p>
-      <div class="course-meta">
-        <span>📅 10 weeks</span>
-        <span>👤 Intermediate</span>
+      <div class="course-card-bar"></div>
+      <div class="course-card-body">
+        <div class="course-icon" style="background:rgba(245,158,11,.1);">🗣️</div>
+        <h3>Spoken Telugu</h3>
+        <p>Build confidence in daily conversation, idioms, and fluent speaking with live peer practice sessions.</p>
+        <div class="course-meta">
+          <span>👤 Intermediate</span>
+        </div>
+        <a href="#enroll" class="btn btn-primary btn-sm">Enroll →</a>
       </div>
-      <a href="#enroll" class="btn btn-primary">Enroll →</a>
     </div>
 
     <div class="course-card">
-      <div class="course-icon" style="background:rgba(239,68,68,.1);">🧒</div>
-      <h3>Kids Special</h3>
-      <p>Fun, engaging Telugu lessons for children ages 5–12. Stories, rhymes, drawing, and games to keep them hooked!</p>
-      <div class="course-meta">
-        <span>📅 8 weeks</span>
-        <span>👤 Ages 5–12</span>
+      <div class="course-card-bar"></div>
+      <div class="course-card-body">
+        <div class="course-icon" style="background:rgba(239,68,68,.1);">🧒</div>
+        <h3>Kids Special</h3>
+        <p>Fun, engaging Telugu lessons for children ages 5–12. Stories, rhymes, drawing, and games to keep them hooked.</p>
+        <div class="course-meta">
+          <span>👤 Ages 5–12</span>
+        </div>
+        <a href="#enroll" class="btn btn-primary btn-sm">Enroll →</a>
       </div>
-      <a href="#enroll" class="btn btn-primary">Enroll →</a>
     </div>
 
-  </div>
-</section>
-
-<!-- ════════ CULTURE ════════ -->
-<section class="section section-alt" id="culture">
-  <div class="section-header">
-    <div class="section-tag">Culture</div>
-    <h2 class="section-title">More Than a Language — A Heritage</h2>
-    <p class="section-subtitle">Dive deep into Telugu culture: stories, songs, festivals, and poetry woven into every lesson.</p>
-  </div>
-
-  <div class="culture-grid">
-
-    <div class="culture-card">
-      <span class="culture-emoji">🎵</span>
-      <h3>Telugu Songs</h3>
-      <p>Folk songs, lullabies, and classical compositions to learn language naturally through melody and rhythm.</p>
-    </div>
-
-    <div class="culture-card">
-      <span class="culture-emoji">📖</span>
-      <h3>Folk Tales</h3>
-      <p>Timeless Panchatantra-style stories from Telugu folklore that carry wisdom, humor, and cultural values.</p>
-    </div>
-
-    <div class="culture-card">
-      <span class="culture-emoji">🪔</span>
-      <h3>Festivals</h3>
-      <p>Ugadi, Sankranti, Dussehra — learn the significance, traditions, and vocabulary of Telugu festivals.</p>
-    </div>
-
-    <div class="culture-card">
-      <span class="culture-emoji">🖊️</span>
-      <h3>Telugu Poetry</h3>
-      <p>Explore classic Padyam (verse) and modern poetry from legendary Telugu poets like Vemana and Potana.</p>
-    </div>
-
-  </div>
-
-  <!-- Culture showcase strip -->
-  <div style="margin-top:44px; background:linear-gradient(135deg,var(--primary-dark),var(--primary)); border-radius:var(--radius-lg); padding:36px 40px; color:#fff; display:flex; align-items:center; gap:32px; flex-wrap:wrap;">
-    <div style="flex:1; min-width:220px;">
-      <div style="font-family:'Noto Sans Telugu',sans-serif; font-size:1.8rem; opacity:.85; margin-bottom:8px;">తెలుగు మన గర్వం</div>
-      <p style="opacity:.8; font-size:.95rem; line-height:1.6;">Telugu is our pride. We don't just teach the language — we pass on a 2,000-year legacy of art, literature, and identity to the next generation.</p>
-    </div>
-    <a href="#enroll" class="btn btn-accent btn-lg" style="flex-shrink:0;">Join a Culture Class</a>
   </div>
 </section>
 
 <!-- ════════ TESTIMONIALS ════════ -->
-<section class="section" id="testimonials">
+<section class="section section-alt" id="testimonials" aria-labelledby="testimonials-title">
+  <div style="max-width:1180px; margin:0 auto;">
   <div class="section-header">
     <div class="section-tag">Testimonials</div>
-    <h2 class="section-title">What Our Students Say</h2>
+    <h2 class="section-title" id="testimonials-title">What our students say</h2>
     <p class="section-subtitle">Real stories from students and parents who transformed their Telugu journey with us.</p>
   </div>
 
@@ -186,7 +162,7 @@
 
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
-      <p class="testimonial-text">"My daughter was born in the US and couldn't speak a word of Telugu. After 3 months with Sri Telugu Classes, she's reading children's books and having full conversations with her grandparents!"</p>
+      <p class="testimonial-text">"My daughter was born in the US and couldn't speak a word of Telugu. After 3 months with Sri Telugu Classes, she's reading children's books and having full conversations with her grandparents in India. The teachers are patient, warm, and genuinely care."</p>
       <div class="testimonial-author">
         <div class="author-avatar">PR</div>
         <div>
@@ -198,7 +174,7 @@
 
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
-      <p class="testimonial-text">"The Spoken Telugu course is fantastic. I went from understanding 20% to having full conversations with my relatives in Hyderabad. The live sessions with real teachers made all the difference."</p>
+      <p class="testimonial-text">"The Spoken Telugu course is fantastic. I went from understanding 20% to having full conversations with my relatives in Hyderabad. Live sessions made all the difference."</p>
       <div class="testimonial-author">
         <div class="author-avatar">AK</div>
         <div>
@@ -210,7 +186,7 @@
 
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
-      <p class="testimonial-text">"The culture lessons are what sets this apart. My kids don't just learn the language — they learn about Ugadi, Harikatha, and our identity. I'm so proud of what they know now."</p>
+      <p class="testimonial-text">"My kids don't just learn the language — they learn about Ugadi, Harikatha, and our identity. I'm so proud of what they know now."</p>
       <div class="testimonial-author">
         <div class="author-avatar">SM</div>
         <div>
@@ -221,27 +197,31 @@
     </div>
 
   </div>
+  </div>
 </section>
 
 <!-- ════════ ENROLLMENT CTA ════════ -->
-<section class="enrollment-section" id="enroll">
-  <h2>Ready to Start Your Telugu Journey?</h2>
-  <p>Join 500+ students learning Telugu from the comfort of home. Your first trial class is completely free.</p>
-  <form class="enrollment-form" id="enrollForm" novalidate>
-    <input type="email" id="enrollEmail" placeholder="Enter your email address" required>
-    <button type="submit" class="btn btn-accent btn-lg">Get Free Trial →</button>
-  </form>
-  <p class="enrollment-note">No credit card required · Cancel anytime · First class free</p>
-  <p id="enrollSuccess" style="margin-top:14px; font-size:.92rem; opacity:.92;">🎉 Thank you! We'll be in touch within 24 hours.</p>
+<section class="enrollment-section" id="enroll" aria-labelledby="enroll-title">
+  <div class="enrollment-inner">
+    <h2 id="enroll-title">Ready to start your Telugu journey?</h2>
+    <p>Join 500+ students learning Telugu from the comfort of home. Your first trial class is completely free.</p>
+    <form class="enrollment-form" id="enrollForm" novalidate aria-label="Enrollment form">
+      <input type="email" id="enrollEmail" name="email" placeholder="Email address" required autocomplete="email" aria-label="Email address">
+      <input type="tel" id="enrollPhone" name="phone" placeholder="Phone number (e.g. +1 555 000 0000)" autocomplete="tel" aria-label="Phone number">
+      <button type="submit" class="btn btn-accent btn-lg">Get Free Trial →</button>
+    </form>
+    <p class="enrollment-note">No credit card required · Cancel anytime · First class free</p>
+    <p id="enrollSuccess" style="margin-top:16px; font-size:.9rem; opacity:.92; display:none;">Thank you — we will be in touch within 24 hours.</p>
+  </div>
 </section>
 
 <!-- ════════ FOOTER ════════ -->
-<footer class="footer">
+<footer class="footer" role="contentinfo">
   <div class="footer-grid">
 
     <div class="footer-brand">
       <div class="logo-icon telugu">శ్రీ</div>
-      <p>Sri Telugu Classes brings the beauty of the Telugu language and culture to learners worldwide through expert-led live online classes.</p>
+      <p>Sri Telugu Classes brings the beauty of the Telugu language to learners worldwide through expert-led live online classes.</p>
       <div class="footer-tagline telugu">తెలుగు మన గర్వం</div>
     </div>
 
@@ -252,16 +232,6 @@
         <li><a href="#courses">Reading &amp; Writing</a></li>
         <li><a href="#courses">Spoken Telugu</a></li>
         <li><a href="#courses">Kids Special</a></li>
-      </ul>
-    </div>
-
-    <div class="footer-col">
-      <h4>Culture</h4>
-      <ul>
-        <li><a href="#culture">Telugu Songs</a></li>
-        <li><a href="#culture">Folk Tales</a></li>
-        <li><a href="#culture">Festivals</a></li>
-        <li><a href="#culture">Poetry</a></li>
       </ul>
     </div>
 
@@ -279,28 +249,67 @@
 
   <div class="footer-bottom">
     <span>© 2026 Sri Telugu Classes. All rights reserved.</span>
-    <span class="telugu" style="color:var(--primary-light); font-size:.95rem;">తెలుగు నేర్చుకో, సంస్కృతిని తెలుసుకో</span>
+    <span class="telugu" style="color:var(--primary-light); font-size:.9rem;">తెలుగు నేర్చుకో, సంస్కృతిని తెలుసుకో</span>
   </div>
 </footer>
 
 <script>
   // Hamburger menu
-  document.getElementById('hamburger').addEventListener('click', function() {
-    document.getElementById('navLinks').classList.toggle('open');
+  var hamburger = document.getElementById('hamburger');
+  var navLinks  = document.getElementById('navLinks');
+  hamburger.addEventListener('click', function() {
+    var open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
   });
   document.addEventListener('click', function(e) {
-    var nav = document.getElementById('navLinks');
-    var hbg = document.getElementById('hamburger');
-    if (!nav.contains(e.target) && !hbg.contains(e.target)) nav.classList.remove('open');
+    if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
   });
 
-  // Enroll form
+  // Enroll form — email via Web3Forms (browser) + SMS via Netlify function
   document.getElementById('enrollForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var email = document.getElementById('enrollEmail').value.trim();
+    var phone = document.getElementById('enrollPhone').value.trim();
     if (!email) return;
-    document.getElementById('enrollSuccess').style.display = 'block';
-    this.reset();
+
+    var btn = this.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    var emailPromise = fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: '9f5b7aa0-f795-4602-80e6-aeee26c3082c',
+        subject:    'New Enrollment Request — Sri Telugu Classes',
+        from_name:  'Sri Telugu Classes Website',
+        email:      email,
+        phone:      phone || 'Not provided',
+        message:    'New enrollment:\nEmail: ' + email + '\nPhone: ' + (phone || 'Not provided')
+      })
+    });
+
+    var smsPromise = fetch('/.netlify/functions/enroll', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, phone: phone })
+    });
+
+    Promise.all([emailPromise, smsPromise])
+      .then(function() {
+        document.getElementById('enrollSuccess').style.display = 'block';
+        document.getElementById('enrollForm').reset();
+        btn.textContent = 'Get Free Trial →';
+        btn.disabled = false;
+      })
+      .catch(function() {
+        btn.textContent = 'Get Free Trial →';
+        btn.disabled = false;
+        alert('Something went wrong. Please email us at sriteluguonlineclasses@gmail.com');
+      });
   });
 </script>
 </body>
