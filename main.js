@@ -724,3 +724,55 @@
       banner.classList.add('cookie-banner--visible');
     }, 1200);
   })();
+
+// ============================================
+//  PWA: service worker + install prompts
+// ============================================
+(function() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js');
+    });
+  }
+
+  var DISMISS_KEY = 'stc-install-dismissed';
+  var dismissed = false;
+  try { dismissed = !!localStorage.getItem(DISMISS_KEY); } catch (e) {}
+  var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true;
+  if (dismissed || standalone) return;
+
+  function makeBar(html) {
+    var bar = document.createElement('div');
+    bar.className = 'install-tip';
+    bar.innerHTML = html + '<button class="install-tip-close" aria-label="Dismiss">&times;</button>';
+    document.body.appendChild(bar);
+    bar.querySelector('.install-tip-close').addEventListener('click', function() {
+      bar.remove();
+      try { localStorage.setItem(DISMISS_KEY, '1'); } catch (e) {}
+    });
+    return bar;
+  }
+
+  // Android / desktop Chrome: real install prompt
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var bar = makeBar('<span>📲 Get the Sri Telugu Classes app</span><button class="install-tip-btn">Install</button>');
+    bar.querySelector('.install-tip-btn').addEventListener('click', function() {
+      bar.remove();
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+    });
+  });
+
+  // iPhone/iPad Safari: manual hint (no beforeinstallprompt on iOS)
+  var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (isIos) {
+    setTimeout(function() {
+      makeBar('<span>📲 Install this app: tap <strong>Share</strong> <span style="font-size:1.1em;">⎙</span> then <strong>“Add to Home Screen”</strong></span>');
+    }, 4000);
+  }
+})();

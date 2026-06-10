@@ -506,5 +506,8 @@ window.addEventListener('beforeunload', function(e) {
   if (dirty) { e.preventDefault(); e.returnValue = ''; }
 });
 </script>
+<script>
+  if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('sw.js'); }); }
+</script>
 </body>
 </html>
