@@ -106,6 +106,14 @@
       </div>
     </div>
 
+    <!-- Achievement badges -->
+    <div class="badges-panel" id="badgesPanel">
+      <h2>🏅 My Achievements</h2>
+      <div class="badges-grid" id="badgesGrid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
     <!-- Schedule panel -->
     <div class="panel" id="schedule">
       <h2>📅 This Week's Schedule</h2>
@@ -151,6 +159,67 @@
   document.getElementById('statAttended').textContent = att.attended;
   document.getElementById('statUpcoming').textContent = att.upcoming;
   document.getElementById('statPct').textContent      = Math.round((att.attended / att.total) * 100) + '%';
+
+  // ── Achievement badges ──────────────────────────────
+  function buildBadges(attended) {
+    var grid = document.getElementById('badgesGrid');
+    if (!grid) return;
+
+    var BADGES = [
+      {
+        id:       'badge-first-class',
+        icon:     '🎓',
+        name:     'First Class',
+        desc:     'Attended your very first class — welcome to the journey!',
+        unlocked: true,       // always unlocked for any logged-in student
+        req:      null
+      },
+      {
+        id:       'badge-five-classes',
+        icon:     '⭐',
+        name:     '5 Classes Attended',
+        desc:     'Consistent learner — you have attended 5 classes.',
+        unlocked: attended >= 5,
+        req:      5
+      },
+      {
+        id:       'badge-ten-classes',
+        icon:     '🏆',
+        name:     '10 Classes Attended',
+        desc:     'Dedicated student — you have attended 10 classes!',
+        unlocked: attended >= 10,
+        req:      10
+      }
+    ];
+
+    var html = '';
+    BADGES.forEach(function(b) {
+      var stateClass  = b.unlocked ? 'unlocked' : 'locked';
+      var pillText    = b.unlocked ? '✓ Unlocked' : (b.req ? 'Need ' + b.req + ' classes' : 'Locked');
+      var lockOverlay = b.unlocked ? '' : '<div class="badge-lock-overlay">🔒</div>';
+
+      html += [
+        '<div class="badge-card ' + stateClass + ' ' + b.id + '" role="listitem"',
+          ' aria-label="' + b.name + (b.unlocked ? ' — Unlocked' : ' — Locked') + '">',
+          '<div class="badge-icon-wrap">',
+            b.icon,
+            lockOverlay,
+          '</div>',
+          '<div class="badge-info">',
+            '<div class="badge-name">' + b.name + '</div>',
+            '<div class="badge-desc">' + b.desc + '</div>',
+            '<div class="badge-status-pill">' + pillText + '</div>',
+          '</div>',
+        '</div>'
+      ].join('');
+    });
+
+    grid.setAttribute('role', 'list');
+    grid.innerHTML = html;
+  }
+
+  // Render badges
+  buildBadges(att.attended);
 
   // Schedule & notices
   buildSchedule(session.schedule);
