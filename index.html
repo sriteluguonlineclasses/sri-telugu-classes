@@ -648,6 +648,46 @@
 </footer>
 
 <script>
+  // ── Page Transitions ──
+  (function() {
+    // Trigger fade-in on page load
+    document.body.classList.add('page-entering');
+    // Remove class after animation completes (keeps it clean for in-page scroll)
+    document.body.addEventListener('animationend', function onEnter(e) {
+      if (e.animationName === 'page-fade-in') {
+        document.body.classList.remove('page-entering');
+        document.body.removeEventListener('animationend', onEnter);
+      }
+    });
+
+    // Intercept internal link clicks for fade-out before navigation
+    document.addEventListener('click', function(e) {
+      var target = e.target.closest('a[href]');
+      if (!target) return;
+      var href = target.getAttribute('href');
+      if (!href) return;
+
+      // Skip: external links, new-tab links, hash-only anchors (#something on same page),
+      //       javascript: links, and mailto:/tel: links
+      var isExternal   = target.hostname && target.hostname !== window.location.hostname;
+      var isHashOnly   = href.charAt(0) === '#';
+      var isSpecial    = /^(mailto:|tel:|javascript:)/i.test(href);
+      var opensNewTab  = target.target === '_blank';
+
+      if (isExternal || isHashOnly || isSpecial || opensNewTab) return;
+
+      // It's an internal page navigation — do the fade-out
+      e.preventDefault();
+      var dest = target.href; // resolved absolute URL
+
+      document.body.classList.add('page-leaving');
+      setTimeout(function() {
+        window.location.href = dest;
+      }, 260);
+    });
+  })();
+</script>
+<script>
   // Hamburger menu
   var hamburger = document.getElementById('hamburger');
   var navLinks  = document.getElementById('navLinks');

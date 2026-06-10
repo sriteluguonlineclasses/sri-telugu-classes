@@ -88,7 +88,13 @@ function loginStudent(email, password) {
 
 function logoutStudent() {
   localStorage.removeItem("stc_student");
-  window.location.href = "login.html";
+  // Fade out before redirecting
+  if (document.body && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    document.body.classList.add('page-leaving');
+    setTimeout(function() { window.location.href = "login.html"; }, 260);
+  } else {
+    window.location.href = "login.html";
+  }
 }
 
 function getSession() {

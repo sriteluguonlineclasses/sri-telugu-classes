@@ -42,6 +42,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ============================
+   PAGE TRANSITIONS
+   ============================ */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes page-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+/* Fade-in on page load — respects prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  body.page-entering {
+    animation: page-fade-in 0.35s ease both;
+  }
+  body.page-leaving {
+    animation: page-fade-out 0.25s ease both;
+    pointer-events: none;
+  }
+}
+
 .telugu { font-family: 'Noto Sans Telugu', sans-serif; }
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; }

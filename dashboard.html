@@ -138,6 +138,33 @@
   </main>
 </div><!-- end .dashboard-layout -->
 
+<script>
+  // ── Page Transitions ──
+  (function() {
+    document.body.classList.add('page-entering');
+    document.body.addEventListener('animationend', function onEnter(e) {
+      if (e.animationName === 'page-fade-in') {
+        document.body.classList.remove('page-entering');
+        document.body.removeEventListener('animationend', onEnter);
+      }
+    });
+    document.addEventListener('click', function(e) {
+      var target = e.target.closest('a[href]');
+      if (!target) return;
+      var href = target.getAttribute('href');
+      if (!href) return;
+      var isExternal  = target.hostname && target.hostname !== window.location.hostname;
+      var isHashOnly  = href.charAt(0) === '#';
+      var isSpecial   = /^(mailto:|tel:|javascript:)/i.test(href);
+      var opensNewTab = target.target === '_blank';
+      if (isExternal || isHashOnly || isSpecial || opensNewTab) return;
+      e.preventDefault();
+      var dest = target.href;
+      document.body.classList.add('page-leaving');
+      setTimeout(function() { window.location.href = dest; }, 260);
+    });
+  })();
+</script>
 <script src="app.js"></script>
 <script>
   // ── Auth guard ──────────────────────────────────────
