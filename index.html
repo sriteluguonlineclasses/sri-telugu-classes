@@ -206,8 +206,10 @@
     <h2 id="enroll-title">Ready to start your Telugu journey?</h2>
     <p>Join 500+ students learning Telugu from the comfort of home. Your first trial class is completely free.</p>
     <form class="enrollment-form" id="enrollForm" novalidate aria-label="Enrollment form">
-      <input type="email" id="enrollEmail" name="email" placeholder="Email address" required autocomplete="email" aria-label="Email address">
-      <input type="tel" id="enrollPhone" name="phone" placeholder="Phone number (e.g. +1 555 000 0000)" autocomplete="tel" aria-label="Phone number">
+      <input type="email" id="enrollEmail" name="email" placeholder="Email address" required autocomplete="email" aria-label="Email address" aria-describedby="emailError">
+      <span class="field-error-msg" id="emailError" role="alert">Please enter a valid email address.</span>
+      <input type="tel" id="enrollPhone" name="phone" placeholder="Phone number (e.g. +1 555 000 0000)" autocomplete="tel" aria-label="Phone number" aria-describedby="phoneError">
+      <span class="field-error-msg" id="phoneError" role="alert">Please enter a valid phone number (digits, spaces, +, - only).</span>
       <button type="submit" class="btn btn-accent btn-lg">Get Free Trial →</button>
     </form>
     <p class="enrollment-note">No credit card required · Cancel anytime · First class free</p>
@@ -286,12 +288,82 @@
     }
   });
 
+  // ── Inline form validation helpers ──
+  var emailInput = document.getElementById('enrollEmail');
+  var phoneInput = document.getElementById('enrollPhone');
+  var emailError = document.getElementById('emailError');
+  var phoneError = document.getElementById('phoneError');
+
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  }
+  function isValidPhone(v) {
+    // allow empty (optional field), or digits/spaces/+/-/() with min 6 digits
+    if (!v) return true;
+    return /^[\d\s\+\-\(\)]{6,}$/.test(v);
+  }
+
+  function setFieldState(input, errorEl, valid, dirty) {
+    if (!dirty) {
+      input.classList.remove('field-error', 'field-ok');
+      errorEl.classList.remove('visible');
+      return;
+    }
+    if (valid) {
+      input.classList.remove('field-error');
+      input.classList.add('field-ok');
+      errorEl.classList.remove('visible');
+    } else {
+      input.classList.remove('field-ok');
+      input.classList.add('field-error');
+      errorEl.classList.add('visible');
+    }
+  }
+
+  emailInput.addEventListener('input', function() {
+    var v = emailInput.value.trim();
+    setFieldState(emailInput, emailError, isValidEmail(v), v.length > 0);
+  });
+  emailInput.addEventListener('blur', function() {
+    var v = emailInput.value.trim();
+    if (v.length === 0) {
+      // show error only after blur if field was left empty but required
+      setFieldState(emailInput, emailError, false, true);
+      emailError.textContent = 'Email is required.';
+    } else {
+      emailError.textContent = 'Please enter a valid email address.';
+      setFieldState(emailInput, emailError, isValidEmail(v), true);
+    }
+  });
+
+  phoneInput.addEventListener('input', function() {
+    var v = phoneInput.value.trim();
+    setFieldState(phoneInput, phoneError, isValidPhone(v), v.length > 0);
+  });
+  phoneInput.addEventListener('blur', function() {
+    var v = phoneInput.value.trim();
+    setFieldState(phoneInput, phoneError, isValidPhone(v), v.length > 0);
+  });
+
   // Enroll form — email via Web3Forms (browser) + SMS via Netlify function
   document.getElementById('enrollForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    var email = document.getElementById('enrollEmail').value.trim();
-    var phone = document.getElementById('enrollPhone').value.trim();
-    if (!email) return;
+    var email = emailInput.value.trim();
+    var phone = phoneInput.value.trim();
+
+    // Validate on submit
+    var emailOk = email.length > 0 && isValidEmail(email);
+    var phoneOk = isValidPhone(phone);
+
+    if (!emailOk) {
+      emailError.textContent = email.length === 0 ? 'Email is required.' : 'Please enter a valid email address.';
+      setFieldState(emailInput, emailError, false, true);
+      emailInput.focus();
+    }
+    if (!phoneOk) {
+      setFieldState(phoneInput, phoneError, false, true);
+    }
+    if (!emailOk || !phoneOk) return;
 
     var btn = this.querySelector('button[type="submit"]');
     btn.textContent = 'Sending…';
@@ -320,13 +392,19 @@
       .then(function() {
         document.getElementById('enrollSuccess').style.display = 'block';
         document.getElementById('enrollForm').reset();
+        setFieldState(emailInput, emailError, false, false);
+        setFieldState(phoneInput, phoneError, false, false);
         btn.textContent = 'Get Free Trial →';
         btn.disabled = false;
       })
       .catch(function() {
         btn.textContent = 'Get Free Trial →';
         btn.disabled = false;
-        alert('Something went wrong. Please email us at sriteluguonlineclasses@gmail.com');
+        // Inline error — no alert()
+        var errP = document.getElementById('enrollSuccess');
+        errP.style.display = 'block';
+        errP.style.color = '#FCA5A5';
+        errP.textContent = 'Something went wrong. Please email sriteluguonlineclasses@gmail.com';
       });
   });
 </script>
