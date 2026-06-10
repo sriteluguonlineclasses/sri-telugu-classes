@@ -602,6 +602,24 @@
   <span class="whatsapp-tooltip">Chat with us</span>
 </a>
 
+<!-- ════════ FLOATING WORD OF THE DAY ════════ -->
+<div class="wotd-card" id="wotdCard" role="complementary" aria-label="Telugu Word of the Day" aria-live="polite">
+  <div class="wotd-inner">
+    <div class="wotd-label">
+      <span class="wotd-label-dot" aria-hidden="true"></span>
+      Word of the Day
+    </div>
+    <span class="wotd-telugu telugu" id="wotdTelugu" aria-hidden="true"></span>
+    <span class="wotd-romanized" id="wotdRomanized"></span>
+    <span class="wotd-translation" id="wotdTranslation"></span>
+  </div>
+  <button class="wotd-close" id="wotdClose" aria-label="Dismiss word of the day">
+    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="10" height="10">
+      <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
 <!-- ════════ BACK TO TOP BUTTON ════════ -->
 <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
   <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20">
@@ -1073,6 +1091,99 @@
           });
         }, { threshold: 0.1 });
         enrollObs.observe(enrollSection);
+      }
+    }
+  })();
+
+  // ── Floating Telugu Word of the Day ──
+  (function() {
+    var card     = document.getElementById('wotdCard');
+    var closeBtn = document.getElementById('wotdClose');
+    var elTelugu = document.getElementById('wotdTelugu');
+    var elRoman  = document.getElementById('wotdRomanized');
+    var elTrans  = document.getElementById('wotdTranslation');
+    if (!card || !closeBtn) return;
+
+    // 30 curated Telugu words with pronunciation & translation
+    var words = [
+      { t: 'నీళ్ళు',    r: 'Nīḷḷu',       e: 'Water'        },
+      { t: 'నమస్కారం', r: 'Namaskāram',   e: 'Greetings'    },
+      { t: 'ప్రేమ',     r: 'Prēma',        e: 'Love'         },
+      { t: 'మనసు',      r: 'Manasu',       e: 'Heart / Mind' },
+      { t: 'ఆకాశం',    r: 'Ākāśam',       e: 'Sky'          },
+      { t: 'పువ్వు',    r: 'Puvvu',        e: 'Flower'       },
+      { t: 'చందమామ',   r: 'Chandamāma',   e: 'Moon'         },
+      { t: 'ఆనందం',    r: 'Ānandaṁ',      e: 'Happiness'    },
+      { t: 'స్నేహం',    r: 'Snēham',       e: 'Friendship'   },
+      { t: 'అమ్మ',      r: 'Amma',         e: 'Mother'       },
+      { t: 'నేను',      r: 'Nēnu',         e: 'I / Me'       },
+      { t: 'తెలుగు',    r: 'Telugu',       e: 'Telugu'       },
+      { t: 'పాట',       r: 'Pāṭa',         e: 'Song'         },
+      { t: 'పుస్తకం',  r: 'Pustakam',     e: 'Book'         },
+      { t: 'ఇల్లు',     r: 'Illu',         e: 'House / Home' },
+      { t: 'విద్య',     r: 'Vidya',        e: 'Education'    },
+      { t: 'శాంతి',     r: 'Śānti',        e: 'Peace'        },
+      { t: 'కల',        r: 'Kala',         e: 'Dream'        },
+      { t: 'సముద్రం',  r: 'Samudrāṁ',    e: 'Ocean'        },
+      { t: 'వెలుతురు', r: 'Veluṯuru',     e: 'Light'        },
+      { t: 'రాత్రి',   r: 'Rātri',        e: 'Night'        },
+      { t: 'నక్షత్రం', r: 'Nakṣatram',    e: 'Star'         },
+      { t: 'చెట్టు',   r: 'Cheṭṭu',       e: 'Tree'         },
+      { t: 'పిల్ల',     r: 'Pilla',        e: 'Child'        },
+      { t: 'గుండె',    r: 'Guṇḍe',        e: 'Heart (organ)'},
+      { t: 'ఊరు',      r: 'Ūru',           e: 'Village'      },
+      { t: 'నవ్వు',    r: 'Navvu',         e: 'Smile / Laugh'},
+      { t: 'వర్షం',    r: 'Varṣam',        e: 'Rain'         },
+      { t: 'బంగారు',   r: 'Baṅgāru',      e: 'Gold / Dear'  },
+      { t: 'కథ',        r: 'Katha',        e: 'Story'        }
+    ];
+
+    // Pick word deterministically by day-of-year (changes daily, same for all users)
+    var now = new Date();
+    var dayOfYear = Math.floor(
+      (now - new Date(now.getFullYear(), 0, 0)) / 86400000
+    );
+    var todayWord = words[dayOfYear % words.length];
+
+    // Check localStorage — dismissed today? Use date string as key
+    var todayKey = 'wotd_dismissed_' + now.getFullYear() + '_' + (now.getMonth()+1) + '_' + now.getDate();
+    if (localStorage.getItem(todayKey) === '1') return;
+
+    // Populate content
+    elTelugu.textContent = todayWord.t;
+    elRoman.textContent  = todayWord.r;
+    elTrans.textContent  = todayWord.e;
+
+    // Show card after 5 seconds
+    var showTimer = setTimeout(function() {
+      card.classList.add('wotd-visible');
+    }, 5000);
+
+    // Dismiss handler
+    function dismiss() {
+      card.classList.remove('wotd-visible');
+      card.classList.add('wotd-hiding');
+      localStorage.setItem(todayKey, '1');
+      setTimeout(function() {
+        card.style.display = 'none';
+      }, 320);
+    }
+
+    closeBtn.addEventListener('click', dismiss);
+
+    // Also dismiss when user reaches enroll section (not intrusive)
+    if ('IntersectionObserver' in window) {
+      var enrollEl = document.getElementById('enroll');
+      if (enrollEl) {
+        var wotdObs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              dismiss();
+              wotdObs.disconnect();
+            }
+          });
+        }, { threshold: 0.3 });
+        wotdObs.observe(enrollEl);
       }
     }
   })();

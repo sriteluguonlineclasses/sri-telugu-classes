@@ -2702,3 +2702,163 @@ h1, h2, h3, h4 { text-wrap: balance; }
     transform: none !important;
   }
 }
+
+/* ============================
+   FLOATING WORD OF THE DAY
+   ============================ */
+@keyframes wotd-slide-in {
+  from { opacity: 0; transform: translateX(-28px) translateY(10px); }
+  to   { opacity: 1; transform: translateX(0) translateY(0); }
+}
+@keyframes wotd-slide-out {
+  from { opacity: 1; transform: translateX(0) translateY(0); }
+  to   { opacity: 0; transform: translateX(-20px) translateY(6px); }
+}
+@keyframes wotd-char-glow {
+  0%, 100% { text-shadow: 0 0 12px rgba(127,119,221,.40); }
+  50%       { text-shadow: 0 0 24px rgba(127,119,221,.75), 0 0 48px rgba(83,74,183,.30); }
+}
+
+.wotd-card {
+  position: fixed;
+  bottom: 96px;
+  left: 22px;
+  z-index: 9300;
+  width: 220px;
+  background: var(--bg-dark);
+  border: 1px solid rgba(127,119,221,.30);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(26,24,50,.55), 0 2px 10px rgba(83,74,183,.18);
+  overflow: hidden;
+  /* Start hidden */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-28px) translateY(10px);
+  transition: none;
+}
+
+/* Top accent bar */
+.wotd-card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.wotd-card.wotd-visible {
+  animation: wotd-slide-in .45s cubic-bezier(.34,1.56,.64,1) forwards;
+  pointer-events: auto;
+}
+
+.wotd-card.wotd-hiding {
+  animation: wotd-slide-out .28s ease forwards;
+  pointer-events: none;
+}
+
+.wotd-inner {
+  padding: 14px 15px 15px;
+}
+
+.wotd-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--primary-light);
+  opacity: .8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 9px;
+}
+
+.wotd-label-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  display: inline-block;
+}
+
+.wotd-telugu {
+  font-family: 'Noto Sans Telugu', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+  display: block;
+  margin-bottom: 4px;
+  animation: wotd-char-glow 3s ease-in-out infinite;
+}
+
+.wotd-romanized {
+  font-size: .78rem;
+  font-style: italic;
+  color: var(--primary-light);
+  opacity: .85;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.wotd-translation {
+  font-size: .88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.92);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wotd-translation::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--accent-light);
+  flex-shrink: 0;
+  opacity: .7;
+}
+
+.wotd-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: rgba(255,255,255,.08);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.55);
+  transition: background .18s, color .18s;
+  font-family: 'Poppins', sans-serif;
+}
+.wotd-close:hover {
+  background: rgba(255,255,255,.16);
+  color: rgba(255,255,255,.9);
+}
+.wotd-close:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+/* Position above mobile sticky CTA on small screens */
+@media (max-width: 639px) {
+  .wotd-card {
+    bottom: 80px;
+    left: 12px;
+    width: 196px;
+  }
+  .wotd-telugu { font-size: 1.5rem; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wotd-card.wotd-visible { animation: none; opacity: 1; transform: none; }
+  .wotd-card.wotd-hiding  { animation: none; opacity: 0; }
+  .wotd-telugu            { animation: none; }
+}
