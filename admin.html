@@ -73,14 +73,13 @@
 
   <div class="status" id="statusBox"></div>
 
-  <!-- ── Token gate ── -->
+  <!-- ── Password gate ── -->
   <div class="card" id="gate">
-    <h2>🔑 Unlock the console</h2>
-    <p class="hint">Paste your GitHub access token. It is stored only in this browser on this device — use this page only on your own computer.</p>
-    <label for="tokenInput">GitHub token</label>
-    <input type="password" id="tokenInput" placeholder="github_pat_…">
-    <div style="margin-top:14px;"><button class="btn btn-primary" onclick="saveToken()">Unlock</button></div>
-    <p class="hint">This is the same token saved in the <code>.env</code> file on your computer. It lets this page save student changes to GitHub; the website updates itself about a minute later.</p>
+    <h2>🔑 Admin Login</h2>
+    <label for="passInput">Admin password</label>
+    <input type="password" id="passInput" placeholder="Enter admin password" autocomplete="current-password">
+    <div style="margin-top:14px;"><button class="btn btn-primary" id="unlockBtn" onclick="unlockWithPassword()">Sign In</button></div>
+    <p class="hint">Changes you publish here go live on the website in about a minute.</p>
   </div>
 
   <!-- ── Student list ── -->
@@ -164,16 +163,35 @@ function setDirty(d) {
   document.getElementById('dirtyDot').style.display = d ? 'block' : 'none';
 }
 
-// ── Token handling ──
-function saveToken() {
-  var t = document.getElementById('tokenInput').value.trim();
-  if (!t) { status('Please paste a token first.', 'err'); return; }
-  token = t;
-  try { localStorage.setItem('stc_admin_token', t); } catch(e) {}
-  unlock();
+// ── Password gate: the GitHub credential below is AES-256-GCM encrypted
+//    with the admin password (PBKDF2, 310k iterations). Without the
+//    password this blob is useless.
+var ENC_TOKEN = '7XafpVzrDmedF7YmqFXyzpdflR0w5V6bUfB7S54crQ2TykkrVyhWPtrPxURkEQqQdSSmLxJTRRymSrNLCd0z/YyHMISqaUx8FFTVpvi0jmQ+dF82RYINnB8GPA9/u7HMf0dq5ks3mtWzanAxXSWO/GV9jgjf1DLLG2Zs3a6UfhPd2GvBiWLnHFk=';
+
+function unlockWithPassword() {
+  var pw = document.getElementById('passInput').value;
+  if (!pw) { status('Please enter the admin password.', 'err'); return; }
+  var btn = document.getElementById('unlockBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  var raw = Uint8Array.from(atob(ENC_TOKEN), function(c) { return c.charCodeAt(0); });
+  var salt = raw.slice(0, 16), iv = raw.slice(16, 28), ct = raw.slice(28);
+  crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey'])
+    .then(function(km) {
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: 310000, hash: 'SHA-256' },
+        km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    })
+    .then(function(key) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct); })
+    .then(function(buf) {
+      token = new TextDecoder().decode(buf);
+      try { sessionStorage.setItem('stc_admin_session', token); } catch(e) {}
+      unlock();
+    })
+    .catch(function() { status('Wrong password — please try again.', 'err'); })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Sign In'; });
 }
 function forgetToken() {
-  try { localStorage.removeItem('stc_admin_token'); } catch(e) {}
+  try { sessionStorage.removeItem('stc_admin_session'); localStorage.removeItem('stc_admin_token'); } catch(e) {}
   location.reload();
 }
 function unlock() {
@@ -377,8 +395,14 @@ function deleteStudent() {
 
 // ── Boot ──
 (function() {
-  try { token = localStorage.getItem('stc_admin_token'); } catch(e) {}
+  try {
+    localStorage.removeItem('stc_admin_token'); // clean up pre-password storage
+    token = sessionStorage.getItem('stc_admin_session');
+  } catch(e) {}
   if (token) unlock();
+  document.getElementById('passInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') unlockWithPassword();
+  });
 })();
 window.addEventListener('beforeunload', function(e) {
   if (dirty) { e.preventDefault(); e.returnValue = ''; }
