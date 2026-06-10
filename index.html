@@ -602,6 +602,13 @@
   <span class="whatsapp-tooltip">Chat with us</span>
 </a>
 
+<!-- ════════ BACK TO TOP BUTTON ════════ -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20">
+    <path d="M10 15V5M5 10l5-5 5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
 <!-- ════════ FOOTER ════════ -->
 <footer class="footer" role="contentinfo">
   <div class="footer-grid">
@@ -1028,6 +1035,44 @@
         enrollObs.observe(enrollSection);
       }
     }
+  })();
+
+  // ── Back to Top Button ──
+  (function() {
+    var btt = document.getElementById('backToTop');
+    if (!btt) return;
+
+    var SCROLL_THRESHOLD = 400; // px from top before button appears
+    var ticking = false;
+
+    function updateBtt() {
+      if (window.scrollY > SCROLL_THRESHOLD) {
+        btt.classList.add('btt-visible');
+      } else {
+        btt.classList.remove('btt-visible');
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(updateBtt);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Run once on load in case the page is already scrolled
+    updateBtt();
+
+    btt.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Move focus to the top of the page for keyboard/AT users
+      var topTarget = document.getElementById('main') || document.body;
+      if (topTarget) {
+        topTarget.setAttribute('tabindex', '-1');
+        topTarget.focus({ preventScroll: true });
+      }
+    });
   })();
 </script>
 </body>
