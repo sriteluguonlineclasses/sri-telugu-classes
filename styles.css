@@ -3358,3 +3358,350 @@ body,
 [data-theme="dark"] body.page-leaving {
   background: var(--bg);
 }
+
+/* ============================================================
+   DARK MODE HARDENING — Beta #24 audit
+   Fixes all hardcoded colours / missing component overrides
+   ============================================================ */
+
+/* ── Hero: already has a dark gradient bg, keep text crisp ── */
+[data-theme="dark"] .hero p {
+  opacity: .78;
+}
+
+/* ── Stats bar ── */
+[data-theme="dark"] .stats-bar {
+  background: linear-gradient(135deg, #0E0D1E 0%, #1A1832 60%, #252245 100%);
+  border-top: 1px solid var(--border);
+}
+[data-theme="dark"] .stat-item {
+  border-right-color: var(--border);
+}
+
+/* ── Countries strip: fix ::before/::after fade to dark bg ── */
+[data-theme="dark"] .countries-strip::before {
+  background: linear-gradient(90deg, var(--card-bg) 40%, transparent 100%);
+}
+[data-theme="dark"] .countries-strip::after {
+  background: linear-gradient(270deg, var(--card-bg) 40%, transparent 100%);
+}
+[data-theme="dark"] .country-item {
+  background: var(--bg);
+  border-color: var(--border);
+}
+[data-theme="dark"] .country-item:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-light);
+}
+[data-theme="dark"] .country-divider {
+  color: var(--border-strong);
+}
+
+/* ── Course cards: fix actual HTML class names ── */
+[data-theme="dark"] .course-card h3 {
+  color: var(--text);
+}
+[data-theme="dark"] .course-card p {
+  color: var(--text-light);
+}
+[data-theme="dark"] .course-card .course-meta {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .course-icon {
+  filter: brightness(1.1);
+}
+
+/* ── How It Works: dark step cards (deepens the bg slightly) ── */
+[data-theme="dark"] .how-it-works {
+  background: #131225;
+}
+[data-theme="dark"] .hiw-step:hover {
+  border-color: var(--primary-light);
+}
+[data-theme="dark"] .hiw-step-number {
+  color: rgba(127,119,221,.18);
+}
+[data-theme="dark"] .hiw-step-title {
+  color: var(--text);
+}
+[data-theme="dark"] .hiw-step-desc {
+  color: var(--text-light);
+}
+[data-theme="dark"] .hiw-step-desc strong {
+  color: var(--text);
+}
+[data-theme="dark"] .hiw-connector {
+  border-top-color: var(--border);
+}
+/* Icon backgrounds for HIW steps in dark mode */
+[data-theme="dark"] .hiw-step:nth-child(2) .hiw-step-icon {
+  background: linear-gradient(135deg, rgba(29,158,117,.18), rgba(37,196,145,.12));
+}
+[data-theme="dark"] .hiw-step:nth-child(3) .hiw-step-icon {
+  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(252,211,77,.12));
+}
+[data-theme="dark"] .hiw-step-icon {
+  background: linear-gradient(135deg, rgba(83,74,183,.20), rgba(127,119,221,.15));
+  border-color: rgba(127,119,221,.25);
+}
+
+/* ── FAQ: open state uses --primary-50 which becomes correct in dark ── */
+[data-theme="dark"] .faq-list {
+  border-color: var(--border);
+}
+[data-theme="dark"] .faq-item.faq-open {
+  background: rgba(83,74,183,.12);
+}
+[data-theme="dark"] .faq-open .faq-question {
+  color: var(--primary-light);
+}
+[data-theme="dark"] .faq-answer p strong {
+  color: var(--text);
+}
+[data-theme="dark"] .faq-icon {
+  border-color: var(--border-strong);
+}
+
+/* ── Teacher cards: fix hardcoded status dot border ── */
+[data-theme="dark"] .teacher-card {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+[data-theme="dark"] .teacher-status {
+  border-color: var(--card-bg);
+}
+[data-theme="dark"] .teacher-badge--primary {
+  background: var(--primary-50);
+  color: var(--primary-light);
+  border-color: var(--border);
+}
+[data-theme="dark"] .teacher-badge--accent {
+  background: rgba(29,158,117,.15);
+  color: var(--accent-light);
+  border-color: rgba(29,158,117,.25);
+}
+[data-theme="dark"] .teacher-badge--gold {
+  background: rgba(245,158,11,.12);
+  color: #FCD34D;
+  border-color: rgba(245,158,11,.25);
+}
+[data-theme="dark"] .teacher-exp {
+  color: var(--text-muted);
+}
+
+/* ── Testimonials: section-alt bg ── */
+[data-theme="dark"] .section-alt {
+  background: #1A1832;
+}
+
+/* ── Enrollment section: stays with gradient bg, just ensure input is visible ── */
+[data-theme="dark"] .enrollment-form input {
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  border-color: rgba(255,255,255,.20);
+}
+[data-theme="dark"] .enrollment-form input:focus {
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.45);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.10);
+}
+[data-theme="dark"] .enrollment-form input::placeholder {
+  color: rgba(255,255,255,.45);
+}
+[data-theme="dark"] .enrollment-note {
+  color: rgba(255,255,255,.55);
+}
+
+/* ── Dashboard panel ── */
+[data-theme="dark"] .panel {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+[data-theme="dark"] .panel h2 {
+  color: var(--text);
+}
+[data-theme="dark"] .topbar {
+  background: var(--card-bg);
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .topbar-title {
+  color: var(--text);
+}
+[data-theme="dark"] .btn-menu {
+  color: var(--text-light);
+}
+
+/* ── Schedule items ── */
+[data-theme="dark"] .schedule-item {
+  border-color: var(--border);
+}
+[data-theme="dark"] .schedule-item:hover {
+  border-color: var(--primary-light);
+}
+[data-theme="dark"] .schedule-item.is-today {
+  border-color: var(--accent);
+  background: rgba(29,158,117,.06);
+}
+[data-theme="dark"] .sched-dayname,
+[data-theme="dark"] .sched-month {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .sched-daynum {
+  color: var(--text);
+}
+[data-theme="dark"] .sched-course {
+  color: var(--text);
+}
+[data-theme="dark"] .sched-time {
+  color: var(--text-light);
+}
+[data-theme="dark"] .sched-teacher {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .sched-divider {
+  background: var(--border);
+}
+[data-theme="dark"] .badge-today {
+  background: rgba(29,158,117,.18);
+  color: var(--accent-light);
+}
+[data-theme="dark"] .badge-upcoming {
+  background: var(--primary-50);
+  color: var(--primary-light);
+}
+[data-theme="dark"] .badge-completed {
+  background: rgba(107,104,160,.15);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .meet-btn-inactive {
+  background: rgba(255,255,255,.05);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+/* ── Notice board items ── */
+[data-theme="dark"] .notice-item {
+  background: rgba(83,74,183,.12);
+  border-left-color: var(--primary-light);
+}
+[data-theme="dark"] .notice-item.urgent {
+  background: rgba(239,68,68,.10);
+  border-left-color: #EF4444;
+}
+[data-theme="dark"] .notice-item.info {
+  background: rgba(29,158,117,.10);
+  border-left-color: var(--accent-light);
+}
+[data-theme="dark"] .notice-title {
+  color: var(--text);
+}
+[data-theme="dark"] .notice-body {
+  color: var(--text-light);
+}
+[data-theme="dark"] .notice-date {
+  color: var(--text-muted);
+}
+
+/* ── Progress ring: fix hardcoded white inner circle ── */
+[data-theme="dark"] .progress-ring::before {
+  background: var(--card-bg);
+}
+[data-theme="dark"] .progress-ring-text {
+  color: var(--text);
+}
+[data-theme="dark"] .progress-ring-label {
+  color: var(--text-muted);
+}
+
+/* ── Achievement badges: fix locked card bg ── */
+[data-theme="dark"] .badge-card.locked {
+  background: rgba(255,255,255,.03);
+  opacity: .5;
+}
+[data-theme="dark"] .badge-card .badge-icon-wrap {
+  background: rgba(255,255,255,.06);
+}
+[data-theme="dark"] .badge-desc {
+  color: var(--text-muted);
+}
+
+/* ── Stat cards (dashboard) ── */
+[data-theme="dark"] .stat-card-icon {
+  filter: brightness(1.2);
+}
+[data-theme="dark"] .stat-card-label {
+  color: var(--text-muted);
+}
+
+/* ── Auth card (login page) extra hardening ── */
+[data-theme="dark"] .auth-card h2,
+[data-theme="dark"] .auth-logo h2 {
+  color: var(--text);
+}
+[data-theme="dark"] .auth-logo p {
+  color: var(--text-light);
+}
+[data-theme="dark"] .alert-error {
+  background: rgba(239,68,68,.14);
+  color: #FCA5A5;
+  border-color: rgba(239,68,68,.25);
+}
+[data-theme="dark"] .alert-success {
+  background: rgba(34,197,94,.12);
+  color: #86EFAC;
+  border-color: rgba(34,197,94,.22);
+}
+[data-theme="dark"] .demo-hint {
+  background: var(--primary-50);
+  border-color: var(--border);
+  color: var(--text-light);
+}
+[data-theme="dark"] .demo-hint strong {
+  color: var(--primary-light);
+}
+[data-theme="dark"] .auth-footer {
+  color: var(--text-light);
+}
+[data-theme="dark"] .auth-footer a {
+  color: var(--primary-light);
+}
+[data-theme="dark"] .form-group input {
+  background: rgba(255,255,255,.05);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="dark"] .form-group input:focus {
+  border-color: var(--primary-light);
+  background: rgba(127,119,221,.08);
+}
+[data-theme="dark"] .form-group label {
+  color: var(--text-muted);
+}
+
+/* ── Footer body text (actual HTML classes) ── */
+[data-theme="dark"] .footer-brand p {
+  color: rgba(255,255,255,.55);
+}
+[data-theme="dark"] .footer-col h4 {
+  color: rgba(255,255,255,.80);
+}
+[data-theme="dark"] .footer-col ul li a {
+  color: rgba(255,255,255,.50);
+}
+[data-theme="dark"] .footer-col ul li a:hover {
+  color: #fff;
+}
+[data-theme="dark"] .footer-bottom {
+  color: rgba(255,255,255,.45);
+  border-top-color: rgba(255,255,255,.07);
+}
+
+/* ── Why section: already dark bg, no additional override needed ── */
+/* ── Wins strip: already dark bg, no override needed ── */
+
+/* ── Urgency banner: stays amber regardless of dark mode (intentional) ── */
+
+/* ── Smooth topbar border in dark mode on mobile ── */
+[data-theme="dark"] .topbar button[onclick] {
+  color: var(--primary-light);
+}
