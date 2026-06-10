@@ -118,6 +118,16 @@
   }
   </script>
 
+  <!-- ── Dark Mode: apply theme before render to prevent flash ── -->
+  <script>
+    (function(){
+      try {
+        var t = localStorage.getItem('stc-theme');
+        if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+      } catch(e){}
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
@@ -146,6 +156,10 @@
   </ul>
 
   <div class="nav-actions">
+    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <span class="icon-sun" aria-hidden="true">☀️</span>
+      <span class="icon-moon" aria-hidden="true">🌙</span>
+    </button>
     <a href="login.html" class="btn btn-outline">Student Login</a>
     <a href="#enroll" class="btn btn-primary">Enroll Now</a>
     <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -1370,6 +1384,34 @@
         topTarget.setAttribute('tabindex', '-1');
         topTarget.focus({ preventScroll: true });
       }
+    });
+  })();
+
+  // ── Dark Mode Toggle ──
+  (function() {
+    var btn = document.getElementById('darkToggle');
+    if (!btn) return;
+
+    function getTheme() {
+      try { return localStorage.getItem('stc-theme') || 'light'; } catch(e) { return 'light'; }
+    }
+    function setTheme(theme) {
+      try { localStorage.setItem('stc-theme', theme); } catch(e) {}
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      btn.setAttribute('title',      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    // Set initial aria-label
+    setTheme(getTheme());
+
+    btn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      setTheme(current === 'dark' ? 'light' : 'dark');
     });
   })();
 

@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Login — Sri Telugu Classes</title>
+  <!-- ── Dark Mode: apply theme before render to prevent flash ── -->
+  <script>
+    (function(){
+      try {
+        var t = localStorage.getItem('stc-theme');
+        if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+      } catch(e){}
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,6 +22,13 @@
 <body>
 
 <div class="auth-page">
+  <!-- Dark mode toggle — top-right corner -->
+  <button class="dark-toggle" id="darkToggle"
+          style="position:fixed;top:16px;right:16px;z-index:9100;"
+          aria-label="Toggle dark mode" title="Toggle dark mode">
+    <span class="icon-sun" aria-hidden="true">☀️</span>
+    <span class="icon-moon" aria-hidden="true">🌙</span>
+  </button>
   <div class="auth-card">
 
     <!-- Logo -->
@@ -92,6 +109,24 @@
     document.body.classList.add('page-leaving');
     setTimeout(function() { window.location.href = 'dashboard.html'; }, 260);
   }
+
+  // ── Dark Mode Toggle ──
+  (function() {
+    var btn = document.getElementById('darkToggle');
+    if (!btn) return;
+    function getTheme() { try { return localStorage.getItem('stc-theme') || 'light'; } catch(e) { return 'light'; } }
+    function setTheme(theme) {
+      try { localStorage.setItem('stc-theme', theme); } catch(e) {}
+      if (theme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); }
+      else { document.documentElement.removeAttribute('data-theme'); }
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    setTheme(getTheme());
+    btn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  })();
 
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
