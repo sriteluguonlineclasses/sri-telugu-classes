@@ -310,24 +310,49 @@ function closeTeacherEditor() {
   editingTeacher = null;
 }
 
+// "17:30" -> "5:30 PM"
+function to12h(t) {
+  if (!t) return '';
+  var p = t.split(':'), h = parseInt(p[0], 10), m = p[1];
+  var ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+  return h + ':' + m + ' ' + ap;
+}
+// "5:00 PM – 6:00 PM IST" -> ["17:00","18:00"] (best effort for old rows)
+function parseTimeRange(str) {
+  var out = [];
+  var re = /(\d{1,2}):(\d{2})\s*(AM|PM)/gi, m;
+  while ((m = re.exec(str || '')) && out.length < 2) {
+    var h = parseInt(m[1], 10) % 12;
+    if (m[3].toUpperCase() === 'PM') h += 12;
+    out.push(('0' + h).slice(-2) + ':' + m[2]);
+  }
+  return out;
+}
+
 function addClassRow(item) {
   item = (item && item.dayName !== undefined) ? item : {};
   var div = document.createElement('div');
   div.className = 'row-item class-row';
   div.innerHTML =
     '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
-    '<div class="grid2">' +
+    '<div class="grid3">' +
       '<div><label>Day</label><select class="rDay">' +
         DAYS.map(function(d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('') +
       '</select></div>' +
-      '<div><label>Time (shown to student)</label><input class="rTime" placeholder="5:00 PM – 6:00 PM IST"></div>' +
+      '<div><label>Starts (IST)</label><input type="time" class="rStart"></div>' +
+      '<div><label>Ends (IST)</label><input type="time" class="rEnd"></div>' +
+    '</div>' +
+    '<div class="grid2">' +
       '<div><label>Course name</label><input class="rCourse" placeholder="Telugu Class"></div>' +
       '<div><label>Batch</label><input class="rBatch" placeholder="Batch A" list="batchList"></div>' +
     '</div>' +
     '<label>Google Meet link</label><input class="rMeet" placeholder="https://meet.google.com/…">';
   document.getElementById('tScheduleRows').appendChild(div);
   if (item.dayOfWeek !== undefined) div.querySelector('.rDay').value = item.dayOfWeek;
-  div.querySelector('.rTime').value = item.timeIST || '';
+  var times = (item.timeStart && item.timeEnd) ? [item.timeStart, item.timeEnd] : parseTimeRange(item.timeIST);
+  div.querySelector('.rStart').value = times[0] || '';
+  div.querySelector('.rEnd').value = times[1] || '';
   div.querySelector('.rCourse').value = item.course || '';
   div.querySelector('.rBatch').value = item.batch || '';
   div.querySelector('.rMeet').value = item.meetLink || '';
@@ -337,9 +362,13 @@ function saveTeacher() {
   if (!editingTeacher) return;
   var schedule = [].map.call(document.querySelectorAll('.class-row'), function(div) {
     var dow = parseInt(div.querySelector('.rDay').value, 10);
+    var start = div.querySelector('.rStart').value;
+    var end = div.querySelector('.rEnd').value;
+    var label = start ? (to12h(start) + (end ? ' – ' + to12h(end) : '') + ' IST') : '';
     return {
       dayOfWeek: dow, dayName: DAYS[dow],
-      timeIST: div.querySelector('.rTime').value.trim(),
+      timeStart: start, timeEnd: end,
+      timeIST: label,
       course: div.querySelector('.rCourse').value.trim(),
       batch: div.querySelector('.rBatch').value.trim(),
       meetLink: div.querySelector('.rMeet').value.trim()
@@ -423,6 +452,21 @@ function closeEditor() {
   editingEmail = null;
 }
 
+// "2026-06-10" -> "Jun 10, 2026"
+function dateLabel(iso) {
+  if (!iso) return '';
+  var d = new Date(iso + 'T12:00:00');
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+// "Jun 8, 2026" -> "2026-06-08" (best effort for old rows)
+function dateToISO(label) {
+  if (!label) return '';
+  var d = new Date(label);
+  if (isNaN(d)) return '';
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+
 function addNoticeRow(item) {
   item = (item && item.title !== undefined) ? item : {};
   var div = document.createElement('div');
@@ -431,13 +475,13 @@ function addNoticeRow(item) {
     '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
     '<div class="grid2">' +
       '<div><label>Type</label><select class="rType"><option value="info">Info (blue)</option><option value="default">Normal</option><option value="urgent">Urgent (red)</option></select></div>' +
-      '<div><label>Date label</label><input class="rDate" placeholder="Jun 10, 2026"></div>' +
+      '<div><label>Date</label><input type="date" class="rDate"></div>' +
     '</div>' +
     '<label>Title</label><input class="rTitle" placeholder="Notice title">' +
     '<label>Message</label><textarea class="rBody" placeholder="Notice text shown to the student"></textarea>';
   document.getElementById('noticeRows').appendChild(div);
   if (item.type) div.querySelector('.rType').value = item.type;
-  div.querySelector('.rDate').value = item.date || '';
+  div.querySelector('.rDate').value = item.dateISO || dateToISO(item.date);
   div.querySelector('.rTitle').value = item.title || '';
   div.querySelector('.rBody').value = item.body || '';
 }
@@ -452,11 +496,13 @@ function saveStudent() {
 
   var initials = name.split(/\s+/).map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
   var notices = [].map.call(document.querySelectorAll('.notice-row'), function(div) {
+    var iso = div.querySelector('.rDate').value;
     return {
       type: div.querySelector('.rType').value,
       title: div.querySelector('.rTitle').value.trim(),
       body: div.querySelector('.rBody').value.trim(),
-      date: div.querySelector('.rDate').value.trim()
+      dateISO: iso,
+      date: dateLabel(iso)
     };
   }).filter(function(n) { return n.title || n.body; });
 
