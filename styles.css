@@ -1179,6 +1179,174 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 
 /* ============================
+   HOW IT WORKS
+   ============================ */
+.how-it-works {
+  background: var(--bg);
+  padding: 88px 5%;
+}
+.hiw-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.hiw-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  position: relative;
+}
+
+/* Dashed connecting line between steps */
+.hiw-connector {
+  position: absolute;
+  top: 62px; /* vertically centred on the icon circles */
+  left: calc(16.67% + 28px);  /* starts after left edge of step-1 icon */
+  right: calc(16.67% + 28px); /* ends before right edge of step-3 icon */
+  height: 2px;
+  border-top: 2.5px dashed var(--border-strong);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hiw-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 24px 28px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+  transition: transform .26s ease, box-shadow .26s ease, border-color .26s ease;
+}
+.hiw-step:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+}
+
+/* Large background step number */
+.hiw-step-number {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--primary-100);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Icon circle */
+.hiw-step-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+  border: 2px solid var(--primary-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(83,74,183,.12);
+  flex-shrink: 0;
+  transition: background .26s ease, box-shadow .26s ease;
+}
+.hiw-step:nth-child(2) .hiw-step-icon {
+  background: linear-gradient(135deg, var(--accent-50), rgba(29,158,117,.12));
+  border-color: rgba(29,158,117,.22);
+  box-shadow: 0 4px 16px rgba(29,158,117,.12);
+}
+.hiw-step:nth-child(3) .hiw-step-icon {
+  background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(252,211,77,.14));
+  border-color: rgba(245,158,11,.22);
+  box-shadow: 0 4px 16px rgba(245,158,11,.12);
+}
+.hiw-step:hover .hiw-step-icon {
+  box-shadow: 0 8px 24px rgba(83,74,183,.20);
+}
+
+.hiw-step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.hiw-step-desc {
+  font-size: .87rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  max-width: 220px;
+}
+.hiw-step-desc strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Step accent bar at bottom — each step gets a unique color */
+.hiw-step::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  opacity: 0;
+  transition: opacity .26s ease;
+}
+.hiw-step:nth-child(2)::after {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.hiw-step:nth-child(3)::after {
+  background: linear-gradient(90deg, #F59E0B, #FCD34D);
+}
+.hiw-step:hover::after {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .hiw-steps {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .hiw-connector { display: none; }
+  .hiw-step {
+    flex-direction: row;
+    text-align: left;
+    gap: 20px;
+    padding: 22px 24px;
+    align-items: flex-start;
+  }
+  .hiw-step-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    font-size: 1.45rem;
+    border-radius: 15px;
+  }
+  .hiw-step-number {
+    top: 10px;
+    right: 14px;
+    font-size: 2.4rem;
+  }
+  .hiw-step-desc { max-width: none; }
+}
+
+@media (max-width: 600px) {
+  .how-it-works { padding: 64px 5%; }
+}
+
+/* ============================
    RESPONSIVE
    ============================ */
 @media (max-width: 960px) {
