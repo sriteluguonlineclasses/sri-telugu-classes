@@ -2190,3 +2190,201 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .sched-divider { display: none; }
   .enrollment-section { padding: 64px 5%; }
 }
+
+/* ============================
+   STUDENT WINS MINI-STRIP
+   ============================ */
+.wins-strip-section {
+  background: var(--bg-dark);
+  padding: 56px 0 48px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Subtle radial glow for depth */
+.wins-strip-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 60% at 10% 50%, rgba(83,74,183,.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 40%, rgba(29,158,117,.10) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.wins-strip-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.wins-strip-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 0 5%;
+}
+
+/* Reuse .section-tag but override for dark bg */
+.wins-strip-header .section-tag {
+  background: rgba(127,119,221,.18);
+  color: var(--primary-light);
+  border: 1px solid rgba(127,119,221,.28);
+}
+
+.wins-strip-subtitle {
+  color: rgba(255,255,255,.55);
+  font-size: .88rem;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Scrollable track */
+.wins-track-wrap {
+  position: relative;
+}
+
+/* Left/right fade masks */
+.wins-track-wrap::before,
+.wins-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 72px;
+  z-index: 2;
+  pointer-events: none;
+}
+.wins-track-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg-dark) 30%, transparent 100%);
+}
+.wins-track-wrap::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg-dark) 30%, transparent 100%);
+}
+
+.wins-track {
+  display: flex;
+  gap: 20px;
+  padding: 8px 5% 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.wins-track::-webkit-scrollbar { display: none; }
+
+/* Individual win card */
+.win-card {
+  flex: 0 0 clamp(260px, 36vw, 320px);
+  scroll-snap-align: start;
+  border-radius: var(--radius-lg);
+  padding: 26px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  /* glassmorphism base */
+  background: rgba(255,255,255,.065);
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.win-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 42px rgba(0,0,0,.35);
+}
+
+/* Top accent bar per colour variant */
+.win-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.win-card--purple::before { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+.win-card--green::before  { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+.win-card--gold::before   { background: linear-gradient(90deg, #D97706, #FCD34D); }
+.win-card--rose::before   { background: linear-gradient(90deg, #E11D48, #FB7185); }
+
+/* Subtle inner glow tint per variant */
+.win-card--purple { box-shadow: inset 0 0 40px rgba(83,74,183,.08), 0 4px 18px rgba(0,0,0,.22); }
+.win-card--green  { box-shadow: inset 0 0 40px rgba(29,158,117,.08), 0 4px 18px rgba(0,0,0,.22); }
+.win-card--gold   { box-shadow: inset 0 0 40px rgba(245,158,11,.07), 0 4px 18px rgba(0,0,0,.22); }
+.win-card--rose   { box-shadow: inset 0 0 40px rgba(225,29,72,.07), 0 4px 18px rgba(0,0,0,.22); }
+
+/* Stars */
+.win-stars {
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: #FCD34D;
+  line-height: 1;
+}
+
+/* Quote */
+.win-quote {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.92);
+  line-height: 1.55;
+  flex: 1;
+  quotes: none;
+}
+
+/* Author row */
+.win-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.win-avatar {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-name {
+  font-size: .85rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.88);
+}
+
+.win-location {
+  font-size: .75rem;
+  color: rgba(255,255,255,.42);
+  margin-top: 2px;
+}
+
+/* Mobile swipe hint */
+.wins-scroll-hint {
+  text-align: center;
+  font-size: .75rem;
+  color: rgba(255,255,255,.28);
+  margin-top: 4px;
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .wins-strip-section { padding: 48px 0 38px; }
+  .win-card { flex: 0 0 clamp(240px, 72vw, 290px); }
+}
+
+@media (max-width: 600px) {
+  .wins-strip-section { padding: 44px 0 32px; }
+  .win-card { flex: 0 0 clamp(230px, 82vw, 280px); padding: 22px 20px 20px; }
+  .wins-scroll-hint { display: block; }
+  .wins-track-wrap::before,
+  .wins-track-wrap::after { width: 40px; }
+}
