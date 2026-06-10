@@ -1454,6 +1454,149 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 
 /* ============================
+   BATCH COUNTDOWN STRIP
+   ============================ */
+.batch-countdown {
+  background: linear-gradient(90deg, #1A1832 0%, #2D2660 50%, #1A1832 100%);
+  border-top: 1px solid rgba(83,74,183,.35);
+  border-bottom: 1px solid rgba(83,74,183,.35);
+  color: #fff;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  animation: cd-fade-in 0.6s ease both 0.5s;
+}
+
+@keyframes cd-fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.batch-countdown::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(83,74,183,.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.batch-countdown-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 12px 5%;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.batch-countdown-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.batch-countdown-units {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.batch-cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 44px;
+}
+
+.batch-cd-num {
+  font-size: 1.45rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: -0.02em;
+  /* subtle glow */
+  text-shadow: 0 0 18px rgba(83,74,183,.7);
+  transition: color 0.25s ease;
+}
+
+.batch-cd-num.cd-tick {
+  color: #a5f3d6;
+}
+
+.batch-cd-lbl {
+  font-size: 0.62rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,.5);
+  margin-top: 2px;
+}
+
+.batch-cd-sep {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: rgba(83,74,183,.7);
+  line-height: 1;
+  padding-bottom: 14px; /* align with top of number */
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.batch-countdown-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 18px;
+  background: var(--primary, #534AB7);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,.22);
+  transition: transform .2s ease, box-shadow .2s ease, background .18s ease;
+  box-shadow: 0 2px 12px rgba(83,74,183,.4);
+  flex-shrink: 0;
+}
+.batch-countdown-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(83,74,183,.55);
+  background: #6a60d4;
+}
+.batch-countdown-cta:active {
+  transform: scale(.97);
+}
+
+/* Expired state */
+.batch-countdown.cd-expired .batch-countdown-units {
+  display: none;
+}
+.batch-countdown.cd-expired .batch-countdown-label {
+  color: rgba(255,255,255,.9);
+}
+
+@media (max-width: 600px) {
+  .batch-countdown-inner {
+    gap: 10px;
+    padding: 10px 5%;
+  }
+  .batch-countdown-label { font-size: 0.74rem; }
+  .batch-cd-num  { font-size: 1.2rem; }
+  .batch-cd-unit { min-width: 36px; }
+  .batch-cd-sep  { font-size: 1.1rem; }
+  .batch-countdown-cta { font-size: 0.75rem; padding: 6px 14px; }
+}
+
+/* ============================
    LOGIN PAGE
    ============================ */
 .auth-page {

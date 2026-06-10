@@ -679,6 +679,35 @@
   </div>
 </div>
 
+<!-- ════════ BATCH COUNTDOWN STRIP ════════ -->
+<div class="batch-countdown" id="batchCountdown" aria-live="polite" aria-label="Next batch countdown">
+  <div class="batch-countdown-inner">
+    <span class="batch-countdown-label">Next batch starts in</span>
+    <div class="batch-countdown-units" id="countdownUnits">
+      <div class="batch-cd-unit">
+        <span class="batch-cd-num" id="cdDays">--</span>
+        <span class="batch-cd-lbl">days</span>
+      </div>
+      <span class="batch-cd-sep" aria-hidden="true">:</span>
+      <div class="batch-cd-unit">
+        <span class="batch-cd-num" id="cdHours">--</span>
+        <span class="batch-cd-lbl">hours</span>
+      </div>
+      <span class="batch-cd-sep" aria-hidden="true">:</span>
+      <div class="batch-cd-unit">
+        <span class="batch-cd-num" id="cdMins">--</span>
+        <span class="batch-cd-lbl">mins</span>
+      </div>
+      <span class="batch-cd-sep" aria-hidden="true">:</span>
+      <div class="batch-cd-unit">
+        <span class="batch-cd-num" id="cdSecs">--</span>
+        <span class="batch-cd-lbl">secs</span>
+      </div>
+    </div>
+    <a href="#enroll" class="batch-countdown-cta">Secure My Spot</a>
+  </div>
+</div>
+
 <!-- ════════ ENROLLMENT CTA ════════ -->
 <section class="enrollment-section" id="enroll" aria-labelledby="enroll-title">
   <div class="enrollment-inner">
@@ -1090,6 +1119,61 @@
       }, 340);
       sessionStorage.setItem('urgencyBannerDismissed', '1');
     });
+  })();
+
+  // ── Batch Countdown Strip ──
+  (function() {
+    // Target: July 7, 2026 at 09:00 AM UTC
+    var TARGET = new Date('2026-07-07T09:00:00Z').getTime();
+
+    var wrap   = document.getElementById('batchCountdown');
+    var elDays = document.getElementById('cdDays');
+    var elHrs  = document.getElementById('cdHours');
+    var elMins = document.getElementById('cdMins');
+    var elSecs = document.getElementById('cdSecs');
+    if (!wrap || !elDays) return;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    // Flash the number briefly to signal a tick
+    function tick(el, newVal) {
+      var cur = el.textContent;
+      if (cur === newVal) return;
+      el.textContent = newVal;
+      el.classList.remove('cd-tick');
+      // Force reflow then re-add class
+      void el.offsetWidth;
+      el.classList.add('cd-tick');
+      setTimeout(function() { el.classList.remove('cd-tick'); }, 250);
+    }
+
+    function update() {
+      var diff = TARGET - Date.now();
+      if (diff <= 0) {
+        // Batch has started — swap text
+        wrap.classList.add('cd-expired');
+        var label = wrap.querySelector('.batch-countdown-label');
+        if (label) label.textContent = 'New batch is now open — join today!';
+        clearInterval(timer);
+        return;
+      }
+
+      var totalSecs  = Math.floor(diff / 1000);
+      var secs       = totalSecs % 60;
+      var totalMins  = Math.floor(totalSecs / 60);
+      var mins       = totalMins % 60;
+      var totalHours = Math.floor(totalMins / 60);
+      var hours      = totalHours % 24;
+      var days       = Math.floor(totalHours / 24);
+
+      tick(elDays, pad(days));
+      tick(elHrs,  pad(hours));
+      tick(elMins, pad(mins));
+      tick(elSecs, pad(secs));
+    }
+
+    update(); // immediate first render
+    var timer = setInterval(update, 1000);
   })();
 
   // ── Navbar: scroll-shadow + active link highlighting ──
