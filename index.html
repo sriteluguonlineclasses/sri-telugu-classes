@@ -325,6 +325,22 @@
   </div>
 </section>
 
+<!-- ════════ BATCH URGENCY BANNER ════════ -->
+<div class="urgency-banner" id="urgencyBanner" role="alert" aria-live="polite">
+  <div class="urgency-banner-inner">
+    <span class="urgency-icon" aria-hidden="true">🔥</span>
+    <span class="urgency-text">
+      <strong>Next batch starts July 7</strong> — only <strong>4 spots left!</strong> Secure yours before it fills up.
+    </span>
+    <a href="#enroll" class="urgency-cta">Reserve My Spot</a>
+    <button class="urgency-close" id="urgencyClose" aria-label="Dismiss banner">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="14" height="14">
+        <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <!-- ════════ ENROLLMENT CTA ════════ -->
 <section class="enrollment-section" id="enroll" aria-labelledby="enroll-title">
   <div class="enrollment-inner">
@@ -579,6 +595,28 @@
 
     document.querySelectorAll('.reveal').forEach(function(el) {
       revealObserver.observe(el);
+    });
+  })();
+
+  // ── Urgency Banner — dismiss with sessionStorage ──
+  (function() {
+    var banner = document.getElementById('urgencyBanner');
+    var closeBtn = document.getElementById('urgencyClose');
+    if (!banner || !closeBtn) return;
+
+    // If already dismissed this session, hide immediately
+    if (sessionStorage.getItem('urgencyBannerDismissed') === '1') {
+      banner.style.display = 'none';
+      return;
+    }
+
+    closeBtn.addEventListener('click', function() {
+      banner.classList.add('urgency-banner--hiding');
+      // Wait for animation then hide
+      setTimeout(function() {
+        banner.style.display = 'none';
+      }, 340);
+      sessionStorage.setItem('urgencyBannerDismissed', '1');
     });
   })();
 

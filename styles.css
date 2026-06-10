@@ -816,6 +816,147 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 
 /* ============================
+   URGENCY BANNER
+   ============================ */
+.urgency-banner {
+  background: linear-gradient(135deg, #92400E 0%, #B45309 40%, #D97706 80%, #F59E0B 100%);
+  color: #fff;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  /* Slide-in from top */
+  animation: urgency-slide-in 0.48s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* Subtle grain texture on top */
+.urgency-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes urgency-slide-in {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.urgency-banner--hiding {
+  animation: urgency-slide-out 0.32s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes urgency-slide-out {
+  from { transform: translateY(0);     opacity: 1; max-height: 80px; }
+  to   { transform: translateY(-100%); opacity: 0; max-height: 0;   padding: 0; }
+}
+
+.urgency-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 14px 5%;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.urgency-icon {
+  font-size: 1.25rem;
+  animation: urgency-flicker 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes urgency-flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25%       { transform: scale(1.18) rotate(-6deg); }
+  50%       { transform: scale(1.05) rotate(4deg); }
+  75%       { transform: scale(1.12) rotate(-3deg); }
+}
+
+.urgency-text {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,.96);
+  text-align: center;
+}
+.urgency-text strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.urgency-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: #fff;
+  color: #92400E;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, background .18s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  flex-shrink: 0;
+}
+.urgency-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+  background: #FFFBEB;
+}
+.urgency-cta:active {
+  transform: scale(.97);
+}
+
+.urgency-close {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  flex-shrink: 0;
+  transition: background .18s ease, transform .18s ease;
+  padding: 0;
+}
+.urgency-close:hover {
+  background: rgba(255,255,255,.32);
+  transform: translateY(-50%) scale(1.1);
+}
+.urgency-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .urgency-banner-inner {
+    gap: 10px;
+    padding: 12px 5%;
+    padding-right: 48px; /* room for close btn */
+  }
+  .urgency-text { font-size: 0.82rem; text-align: left; }
+  .urgency-cta  { font-size: 0.78rem; padding: 7px 16px; }
+  .urgency-close {
+    right: 14px;
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* ============================
    LOGIN PAGE
    ============================ */
 .auth-page {
