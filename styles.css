@@ -1571,6 +1571,68 @@ h1, h2, h3, h4 { text-wrap: balance; }
   letter-spacing: .6px; margin-top: 6px;
 }
 
+/* ── Attendance Progress Ring ── */
+.progress-ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.progress-ring {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* conic-gradient set via JS custom property --pct */
+  background: conic-gradient(
+    var(--primary) 0deg,
+    var(--primary) calc(var(--pct, 0) * 3.6deg),
+    rgba(83,74,183,.12) calc(var(--pct, 0) * 3.6deg),
+    rgba(83,74,183,.12) 360deg
+  );
+  transition: background 1s ease;
+}
+.progress-ring-high {
+  background: conic-gradient(
+    var(--accent) 0deg,
+    var(--accent) calc(var(--pct, 0) * 3.6deg),
+    rgba(29,158,117,.12) calc(var(--pct, 0) * 3.6deg),
+    rgba(29,158,117,.12) 360deg
+  ) !important;
+}
+.progress-ring-low {
+  background: conic-gradient(
+    #F59E0B 0deg,
+    #F59E0B calc(var(--pct, 0) * 3.6deg),
+    rgba(245,158,11,.12) calc(var(--pct, 0) * 3.6deg),
+    rgba(245,158,11,.12) 360deg
+  ) !important;
+}
+.progress-ring::before {
+  /* inner white circle to create donut effect */
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: #fff;
+}
+.progress-ring-text {
+  position: relative;
+  z-index: 1;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+}
+.progress-ring-label {
+  font-size: .72rem; color: var(--text-muted);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: .6px;
+}
 /* Schedule */
 .panel {
   background: #fff;

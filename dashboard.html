@@ -99,10 +99,15 @@
         <div class="stat-card-value" id="statUpcoming">—</div>
         <div class="stat-card-label">Upcoming</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="statPctCard">
         <div class="stat-card-icon" style="background:rgba(83,74,183,.12);">📊</div>
-        <div class="stat-card-value" id="statPct">—</div>
-        <div class="stat-card-label">Attendance %</div>
+        <!-- Progress ring replaces plain number — animated via JS -->
+        <div class="progress-ring-wrap">
+          <div class="progress-ring" id="progressRing">
+            <span class="progress-ring-text" id="statPct">—</span>
+          </div>
+          <span class="progress-ring-label">Attendance %</span>
+        </div>
       </div>
     </div>
 
@@ -158,7 +163,41 @@
   document.getElementById('statTotal').textContent    = att.total;
   document.getElementById('statAttended').textContent = att.attended;
   document.getElementById('statUpcoming').textContent = att.upcoming;
-  document.getElementById('statPct').textContent      = Math.round((att.attended / att.total) * 100) + '%';
+
+  // ── Progress ring for attendance % ──────────────────
+  var pct = att.total > 0 ? Math.round((att.attended / att.total) * 100) : 0;
+  var ring     = document.getElementById('progressRing');
+  var pctLabel = document.getElementById('statPct');
+
+  // Pick ring colour class based on percentage
+  if (pct >= 75) {
+    ring.classList.add('progress-ring-high');   // green — good attendance
+  } else if (pct < 50) {
+    ring.classList.add('progress-ring-low');    // amber — needs attention
+  }
+  // else default purple
+
+  // Animate ring fill from 0 → pct over ~900ms via requestAnimationFrame
+  var startTime = null;
+  var duration  = 900;
+  function animateRing(ts) {
+    if (!startTime) startTime = ts;
+    var elapsed  = ts - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    // ease out cubic
+    var ease = 1 - Math.pow(1 - progress, 3);
+    var current = Math.round(ease * pct);
+    ring.style.setProperty('--pct', current);
+    pctLabel.textContent = current + '%';
+    if (progress < 1) {
+      requestAnimationFrame(animateRing);
+    } else {
+      ring.style.setProperty('--pct', pct);
+      pctLabel.textContent = pct + '%';
+    }
+  }
+  // Delay slightly so page paint settles before animation starts
+  setTimeout(function() { requestAnimationFrame(animateRing); }, 150);
 
   // ── Achievement badges ──────────────────────────────
   function buildBadges(attended) {
