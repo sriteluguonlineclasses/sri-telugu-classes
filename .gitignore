@@ -10,3 +10,14 @@ Thumbs.db
 # Editor folders
 .vscode/
 .idea/
+
+# Tooling artifacts — never belong in the site repo
+*.phar
+*.phar.asc
+*.zip
+* - Copy.*
+.mcp.json
+skills-lock.json
+.claude/
+.agents/skills/
+.playwright-mcp/
