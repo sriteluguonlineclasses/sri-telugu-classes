@@ -3,9 +3,32 @@
 //   Student data · Auth · Schedule · Dashboard
 // ============================================
 
-// Student records live in students-data.js (window.STUDENTS), which is
-// managed from admin.html — edit them there, not here.
-var STUDENTS = window.STUDENTS || {};
+// Student records and teacher timetables live in students-data.js
+// (window.STC_DATA), managed from admin.html — edit them there, not here.
+var STC_DATA = window.STC_DATA || {};
+var STUDENTS = STC_DATA.students || window.STUDENTS || {};
+var TEACHERS = STC_DATA.teachers || {};
+
+// A student's weekly schedule = every teacher class whose batch matches theirs.
+function scheduleForBatch(batch) {
+  var out = [];
+  Object.keys(TEACHERS).forEach(function(teacherName) {
+    (TEACHERS[teacherName].schedule || []).forEach(function(c) {
+      if (!c.batch || c.batch === batch) {
+        out.push({
+          dayOfWeek: c.dayOfWeek,
+          dayName:   c.dayName,
+          timeIST:   c.timeIST,
+          course:    c.course,
+          teacher:   teacherName,
+          meetLink:  c.meetLink
+        });
+      }
+    });
+  });
+  out.sort(function(a, b) { return a.dayOfWeek - b.dayOfWeek; });
+  return out;
+}
 
 // ─────────────────────────────────────────────
 //  AUTH
@@ -16,9 +39,10 @@ function loginStudent(email, password) {
   if (!student) return { success: false, message: "No account found with this email address." };
   if (student.password !== password) return { success: false, message: "Incorrect password. Please try again." };
 
-  // Store session without the password
+  // Store session without the password; schedule comes from teacher timetables
   const session = Object.assign({}, student);
   delete session.password;
+  session.schedule = scheduleForBatch(student.batch);
   localStorage.setItem("stc_student", JSON.stringify(session));
   return { success: true, student: session };
 }

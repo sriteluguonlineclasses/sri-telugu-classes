@@ -54,20 +54,31 @@
     .topactions { display: flex; gap: 8px; flex-wrap: wrap; }
     .dirty-dot { display: none; width: 8px; height: 8px; border-radius: 50%; background: #F59E0B; position: absolute; top: -2px; right: -2px; }
     .pubwrap { position: relative; display: inline-block; }
+    /* Teacher cards */
+    .teacher-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 560px) { .teacher-cards { grid-template-columns: 1fr; } }
+    .tcard { display: flex; align-items: center; gap: 14px; border: 1.5px solid var(--border); border-radius: 12px;
+             padding: 16px; cursor: pointer; background: #FAFAFE; transition: border-color .15s, transform .15s; text-align: left; width: 100%; font-family: inherit; }
+    .tcard:hover { border-color: var(--primary-light); transform: translateY(-2px); }
+    .tcard .tavatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                      color: #fff; font-weight: 700; font-size: 1.2rem; flex-shrink: 0; }
+    .tcard .tname { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .tcard .tmeta { font-size: .76rem; color: var(--muted); }
+    .tcard .tarrow { margin-left: auto; color: var(--primary); font-size: 1.2rem; }
   </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <h1>🛠️ Admin Console <small>Sri Telugu Classes — students, schedules &amp; notices</small></h1>
+    <h1>🛠️ Admin Console <small>Sri Telugu Classes — teachers, students &amp; notices</small></h1>
     <div class="topactions" id="topActions" style="display:none;">
       <button class="btn btn-ghost btn-sm" onclick="reloadData()">↻ Reload</button>
       <span class="pubwrap">
         <button class="btn btn-accent" id="publishBtn" onclick="publish()">Publish Changes</button>
         <span class="dirty-dot" id="dirtyDot"></span>
       </span>
-      <button class="btn btn-ghost btn-sm" onclick="forgetToken()">Lock</button>
+      <button class="btn btn-ghost btn-sm" onclick="lockConsole()">Lock</button>
     </div>
   </header>
 
@@ -82,6 +93,24 @@
     <p class="hint">Changes you publish here go live on the website in about a minute.</p>
   </div>
 
+  <!-- ── Teachers ── -->
+  <div class="card" id="teachersCard" style="display:none;">
+    <h2 style="margin-bottom:14px;">👩‍🏫 Teachers — weekly timetables</h2>
+    <div class="teacher-cards" id="teacherCards"></div>
+    <p class="hint">Each class belongs to a batch. Students in that batch automatically see the class on their dashboard.</p>
+  </div>
+
+  <!-- ── Teacher editor ── -->
+  <div class="card" id="teacherEditor" style="display:none;">
+    <h2 id="teacherEditorTitle">Teacher Schedule</h2>
+    <div id="tScheduleRows"></div>
+    <button class="btn btn-ghost btn-sm" onclick="addClassRow()">+ Add class</button>
+    <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="saveTeacher()">Save Schedule</button>
+      <button class="btn btn-ghost" onclick="closeTeacherEditor()">Cancel</button>
+    </div>
+  </div>
+
   <!-- ── Student list ── -->
   <div class="card" id="listCard" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
@@ -94,10 +123,10 @@
         <tbody id="studentRows"></tbody>
       </table>
     </div>
-    <p class="hint">After any change, click <strong>Publish Changes</strong> (top right) to make it live.</p>
+    <p class="hint">A student's weekly classes come from the teacher timetables above — every class whose batch matches the student's batch. After any change, click <strong>Publish Changes</strong> (top right) to make it live.</p>
   </div>
 
-  <!-- ── Editor ── -->
+  <!-- ── Student editor ── -->
   <div class="card" id="editorCard" style="display:none;">
     <h2 id="editorTitle">Edit Student</h2>
 
@@ -105,11 +134,12 @@
       <div><label>Full name</label><input id="fName" placeholder="Arjun Reddy"></div>
       <div><label>Email (used to log in)</label><input id="fEmail" placeholder="student@example.com"></div>
       <div><label>Password</label><input id="fPassword" placeholder="choose a password"></div>
-      <div><label>Batch</label><input id="fBatch" placeholder="Batch A"></div>
+      <div><label>Batch</label><input id="fBatch" placeholder="Batch A" list="batchList"><datalist id="batchList"></datalist></div>
       <div><label>Level</label>
         <select id="fLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
       </div>
     </div>
+    <p class="hint">The batch decides which classes this student sees — it must exactly match the batch on the teacher's classes.</p>
 
     <h2 style="margin-top:22px;">📊 Attendance</h2>
     <div class="grid3">
@@ -117,9 +147,6 @@
       <div><label>Attended</label><input id="fAttended" type="number" min="0" value="0"></div>
       <div><label>Upcoming</label><input id="fUpcoming" type="number" min="0" value="0"></div>
     </div>
-
-    <h2 style="margin-top:22px;">📅 Weekly classes <button class="btn btn-ghost btn-sm" onclick="addScheduleRow()">+ Add class</button></h2>
-    <div id="scheduleRows"></div>
 
     <h2 style="margin-top:22px;">📢 Notices <button class="btn btn-ghost btn-sm" onclick="addNoticeRow()">+ Add notice</button></h2>
     <div id="noticeRows"></div>
@@ -137,8 +164,10 @@
 var OWNER = 'sriteluguonlineclasses', REPO = 'sri-telugu-classes', PATH = 'students-data.js', BRANCH = 'main';
 var API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
 var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var TEACHER_COLORS = { 'Jyothi': 'linear-gradient(135deg,#534AB7,#7F77DD)', 'Vijaya': 'linear-gradient(135deg,#1D9E75,#25C491)' };
 
-var token = null, data = {}, sha = null, dirty = false, editingEmail = null;
+var token = null, data = { teachers: {}, students: {} }, sha = null, dirty = false;
+var editingEmail = null, editingTeacher = null;
 
 // ── UTF-8-safe base64 ──
 function b64enc(str) {
@@ -190,34 +219,38 @@ function unlockWithPassword() {
     .catch(function() { status('Wrong password — please try again.', 'err'); })
     .finally(function() { btn.disabled = false; btn.textContent = 'Sign In'; });
 }
-function forgetToken() {
-  try { sessionStorage.removeItem('stc_admin_session'); localStorage.removeItem('stc_admin_token'); } catch(e) {}
+function lockConsole() {
+  try { sessionStorage.removeItem('stc_admin_session'); } catch(e) {}
   location.reload();
 }
 function unlock() {
   document.getElementById('gate').style.display = 'none';
   document.getElementById('topActions').style.display = 'flex';
+  document.getElementById('teachersCard').style.display = 'block';
   document.getElementById('listCard').style.display = 'block';
   reloadData();
 }
 
 // ── Load & publish ──
 function reloadData() {
-  status('Loading current student data from GitHub…', 'busy');
+  status('Loading current data from GitHub…', 'busy');
   fetch(API + '?ref=' + BRANCH + '&t=' + Date.now(), {
     headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' }
   }).then(function(r) {
-    if (r.status === 401 || r.status === 403) throw new Error('Token rejected — check it and try again.');
+    if (r.status === 401 || r.status === 403) throw new Error('Access rejected — try Lock and signing in again.');
     if (!r.ok) throw new Error('GitHub error ' + r.status);
     return r.json();
   }).then(function(j) {
     sha = j.sha;
     var src = b64dec(j.content).trim();
-    src = src.replace(/^window\.STUDENTS\s*=\s*/, '').replace(/;\s*$/, '');
+    src = src.replace(/^window\.STC_DATA\s*=\s*/, '').replace(/;\s*$/, '');
     data = JSON.parse(src);
+    if (!data.teachers) data.teachers = {};
+    if (!data.students) data.students = {};
     setDirty(false);
+    renderTeachers();
     renderList();
-    status('Loaded ' + Object.keys(data).length + ' student(s).', 'ok');
+    status('Loaded ' + Object.keys(data.teachers).length + ' teacher(s) and ' + Object.keys(data.students).length + ' student(s).', 'ok');
   }).catch(function(e) { status(e.message, 'err'); });
 }
 
@@ -226,11 +259,11 @@ function publish() {
   var btn = document.getElementById('publishBtn');
   btn.disabled = true;
   status('Publishing to GitHub…', 'busy');
-  var content = 'window.STUDENTS = ' + JSON.stringify(data, null, 2) + ';\n';
+  var content = 'window.STC_DATA = ' + JSON.stringify(data, null, 2) + ';\n';
   fetch(API, {
     method: 'PUT',
     headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
-    body: JSON.stringify({ message: 'Admin: update student data', content: b64enc(content), sha: sha, branch: BRANCH })
+    body: JSON.stringify({ message: 'Admin: update teacher/student data', content: b64enc(content), sha: sha, branch: BRANCH })
   }).then(function(r) {
     if (!r.ok) return r.json().then(function(j) { throw new Error(j.message || ('GitHub error ' + r.status)); });
     return r.json();
@@ -242,17 +275,116 @@ function publish() {
     .finally(function() { btn.disabled = false; });
 }
 
+// ── Teachers ──
+function renderTeachers() {
+  var wrap = document.getElementById('teacherCards');
+  wrap.innerHTML = '';
+  Object.keys(data.teachers).forEach(function(name) {
+    var t = data.teachers[name];
+    var classes = (t.schedule || []).length;
+    var btn = document.createElement('button');
+    btn.className = 'tcard';
+    btn.innerHTML =
+      '<span class="tavatar" style="background:' + (TEACHER_COLORS[name] || TEACHER_COLORS['Jyothi']) + ';"></span>' +
+      '<span><span class="tname"></span><br><span class="tmeta"></span></span>' +
+      '<span class="tarrow">→</span>';
+    btn.querySelector('.tavatar').textContent = name.charAt(0).toUpperCase();
+    btn.querySelector('.tname').textContent = name;
+    btn.querySelector('.tmeta').textContent = classes + ' class' + (classes === 1 ? '' : 'es') + ' per week';
+    btn.onclick = function() { openTeacherEditor(name); };
+    wrap.appendChild(btn);
+  });
+}
+
+function openTeacherEditor(name) {
+  editingTeacher = name;
+  closeEditor();
+  document.getElementById('teacherEditorTitle').textContent = '📅 ' + name + ' — Weekly Schedule';
+  document.getElementById('tScheduleRows').innerHTML = '';
+  ((data.teachers[name] || {}).schedule || []).forEach(addClassRow);
+  document.getElementById('teacherEditor').style.display = 'block';
+  document.getElementById('teacherEditor').scrollIntoView({ behavior: 'smooth' });
+}
+function closeTeacherEditor() {
+  document.getElementById('teacherEditor').style.display = 'none';
+  editingTeacher = null;
+}
+
+function addClassRow(item) {
+  item = (item && item.dayName !== undefined) ? item : {};
+  var div = document.createElement('div');
+  div.className = 'row-item class-row';
+  div.innerHTML =
+    '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
+    '<div class="grid2">' +
+      '<div><label>Day</label><select class="rDay">' +
+        DAYS.map(function(d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div><label>Time (shown to student)</label><input class="rTime" placeholder="5:00 PM – 6:00 PM IST"></div>' +
+      '<div><label>Course name</label><input class="rCourse" placeholder="Telugu Class"></div>' +
+      '<div><label>Batch</label><input class="rBatch" placeholder="Batch A" list="batchList"></div>' +
+    '</div>' +
+    '<label>Google Meet link</label><input class="rMeet" placeholder="https://meet.google.com/…">';
+  document.getElementById('tScheduleRows').appendChild(div);
+  if (item.dayOfWeek !== undefined) div.querySelector('.rDay').value = item.dayOfWeek;
+  div.querySelector('.rTime').value = item.timeIST || '';
+  div.querySelector('.rCourse').value = item.course || '';
+  div.querySelector('.rBatch').value = item.batch || '';
+  div.querySelector('.rMeet').value = item.meetLink || '';
+}
+
+function saveTeacher() {
+  if (!editingTeacher) return;
+  var schedule = [].map.call(document.querySelectorAll('.class-row'), function(div) {
+    var dow = parseInt(div.querySelector('.rDay').value, 10);
+    return {
+      dayOfWeek: dow, dayName: DAYS[dow],
+      timeIST: div.querySelector('.rTime').value.trim(),
+      course: div.querySelector('.rCourse').value.trim(),
+      batch: div.querySelector('.rBatch').value.trim(),
+      meetLink: div.querySelector('.rMeet').value.trim()
+    };
+  }).filter(function(c) { return c.course || c.timeIST; });
+  if (!data.teachers[editingTeacher]) data.teachers[editingTeacher] = {};
+  data.teachers[editingTeacher].schedule = schedule;
+  setDirty(true);
+  renderTeachers();
+  renderList();
+  closeTeacherEditor();
+  status('Saved ' + editingTeacher + "'s schedule. Click “Publish Changes” to make it live.", 'ok');
+}
+
+// ── Helpers ──
+function classesForBatch(batch) {
+  var n = 0;
+  Object.keys(data.teachers).forEach(function(name) {
+    (data.teachers[name].schedule || []).forEach(function(c) {
+      if (!c.batch || c.batch === batch) n++;
+    });
+  });
+  return n;
+}
+function refreshBatchList() {
+  var batches = {};
+  Object.keys(data.teachers).forEach(function(name) {
+    (data.teachers[name].schedule || []).forEach(function(c) { if (c.batch) batches[c.batch] = 1; });
+  });
+  Object.keys(data.students).forEach(function(e) { if (data.students[e].batch) batches[data.students[e].batch] = 1; });
+  document.getElementById('batchList').innerHTML =
+    Object.keys(batches).sort().map(function(b) { return '<option value="' + b.replace(/"/g, '&quot;') + '">'; }).join('');
+}
+
 // ── Student list ──
 function renderList() {
+  refreshBatchList();
   var tbody = document.getElementById('studentRows');
   tbody.innerHTML = '';
-  var emails = Object.keys(data);
+  var emails = Object.keys(data.students);
   document.getElementById('countPill').textContent = emails.length;
   emails.forEach(function(email) {
-    var s = data[email];
+    var s = data.students[email];
     var tr = document.createElement('tr');
-    var classes = (s.schedule || []).length;
-    tr.innerHTML = '<td><strong></strong></td><td></td><td></td><td>' + classes + '</td>' +
+    tr.innerHTML = '<td><strong></strong></td><td></td><td></td><td>' + classesForBatch(s.batch) + '</td>' +
       '<td style="text-align:right;"><button class="btn btn-primary btn-sm">Edit</button></td>';
     tr.querySelector('strong').textContent = s.name || '(no name)';
     tr.children[1].textContent = email;
@@ -263,12 +395,13 @@ function renderList() {
   if (!emails.length) tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No students yet — click “+ Add Student”.</td></tr>';
 }
 
-// ── Editor ──
+// ── Student editor ──
 function newStudent() { openEditor(null); }
 
 function openEditor(email) {
   editingEmail = email;
-  var s = email ? data[email] : { attendance: { total: 0, attended: 0, upcoming: 0 }, schedule: [], notices: [] };
+  closeTeacherEditor();
+  var s = email ? data.students[email] : { attendance: { total: 0, attended: 0, upcoming: 0 }, notices: [] };
   document.getElementById('editorTitle').textContent = email ? ('Edit: ' + (s.name || email)) : 'Add New Student';
   document.getElementById('deleteBtn').style.display = email ? 'inline-block' : 'none';
   document.getElementById('fName').value = s.name || '';
@@ -280,8 +413,6 @@ function openEditor(email) {
   document.getElementById('fTotal').value = a.total || 0;
   document.getElementById('fAttended').value = a.attended || 0;
   document.getElementById('fUpcoming').value = a.upcoming || 0;
-  document.getElementById('scheduleRows').innerHTML = '';
-  (s.schedule || []).forEach(addScheduleRow);
   document.getElementById('noticeRows').innerHTML = '';
   (s.notices || []).forEach(addNoticeRow);
   document.getElementById('editorCard').style.display = 'block';
@@ -290,29 +421,6 @@ function openEditor(email) {
 function closeEditor() {
   document.getElementById('editorCard').style.display = 'none';
   editingEmail = null;
-}
-
-function addScheduleRow(item) {
-  item = (item && item.dayName !== undefined) ? item : {};
-  var div = document.createElement('div');
-  div.className = 'row-item sched-row';
-  div.innerHTML =
-    '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
-    '<div class="grid2">' +
-      '<div><label>Day</label><select class="rDay">' +
-        DAYS.map(function(d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('') +
-      '</select></div>' +
-      '<div><label>Time (shown to student)</label><input class="rTime" placeholder="5:00 PM – 6:00 PM IST"></div>' +
-      '<div><label>Course name</label><input class="rCourse" placeholder="Telugu Class"></div>' +
-      '<div><label>Teacher</label><select class="rTeacher"><option>Jyothi</option><option>Vijaya</option></select></div>' +
-    '</div>' +
-    '<label>Google Meet link</label><input class="rMeet" placeholder="https://meet.google.com/…">';
-  document.getElementById('scheduleRows').appendChild(div);
-  if (item.dayOfWeek !== undefined) div.querySelector('.rDay').value = item.dayOfWeek;
-  div.querySelector('.rTime').value = item.timeIST || '';
-  div.querySelector('.rCourse').value = item.course || '';
-  if (item.teacher) div.querySelector('.rTeacher').value = item.teacher;
-  div.querySelector('.rMeet').value = item.meetLink || '';
 }
 
 function addNoticeRow(item) {
@@ -340,19 +448,9 @@ function saveStudent() {
   var password = document.getElementById('fPassword').value;
   if (!name || !email || !password) { status('Name, email and password are required.', 'err'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status('That email address does not look valid.', 'err'); return; }
-  if (!editingEmail && data[email]) { status('A student with that email already exists.', 'err'); return; }
+  if (!editingEmail && data.students[email]) { status('A student with that email already exists.', 'err'); return; }
 
   var initials = name.split(/\s+/).map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
-  var schedule = [].map.call(document.querySelectorAll('.sched-row'), function(div) {
-    var dow = parseInt(div.querySelector('.rDay').value, 10);
-    return {
-      dayOfWeek: dow, dayName: DAYS[dow],
-      timeIST: div.querySelector('.rTime').value.trim(),
-      course: div.querySelector('.rCourse').value.trim(),
-      teacher: div.querySelector('.rTeacher').value,
-      meetLink: div.querySelector('.rMeet').value.trim()
-    };
-  });
   var notices = [].map.call(document.querySelectorAll('.notice-row'), function(div) {
     return {
       type: div.querySelector('.rType').value,
@@ -372,11 +470,11 @@ function saveStudent() {
       attended: parseInt(document.getElementById('fAttended').value, 10) || 0,
       upcoming: parseInt(document.getElementById('fUpcoming').value, 10) || 0
     },
-    schedule: schedule, notices: notices
+    notices: notices
   };
 
-  if (editingEmail && editingEmail !== email) delete data[editingEmail];
-  data[email] = record;
+  if (editingEmail && editingEmail !== email) delete data.students[editingEmail];
+  data.students[email] = record;
   setDirty(true);
   renderList();
   closeEditor();
@@ -386,7 +484,7 @@ function saveStudent() {
 function deleteStudent() {
   if (!editingEmail) return;
   if (!confirm('Delete ' + editingEmail + '? This removes their login and dashboard.')) return;
-  delete data[editingEmail];
+  delete data.students[editingEmail];
   setDirty(true);
   renderList();
   closeEditor();
