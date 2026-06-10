@@ -702,6 +702,74 @@
     });
   })();
 
+  // ── Navbar: scroll-shadow + active link highlighting ──
+  (function() {
+    var navbar = document.getElementById('navbar');
+    if (!navbar) return;
+
+    // --- Scroll shadow ---
+    function onScroll() {
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // run once on load
+
+    // --- Active link highlighting via IntersectionObserver ---
+    // Map each section id to its nav anchor
+    var sectionIds = ['main', 'courses', 'teachers', 'testimonials', 'faq', 'enroll'];
+    var navMap = {};
+    sectionIds.forEach(function(id) {
+      var anchor = navbar.querySelector('a[href="#' + id + '"]');
+      if (anchor) navMap[id] = anchor;
+    });
+
+    if (!('IntersectionObserver' in window)) return;
+
+    var activeId = null;
+
+    function setActive(id) {
+      if (id === activeId) return;
+      activeId = id;
+      Object.values(navMap).forEach(function(a) {
+        a.classList.remove('nav-active');
+      });
+      if (id && navMap[id]) {
+        navMap[id].classList.add('nav-active');
+      }
+    }
+
+    var sectionObserver = new IntersectionObserver(function(entries) {
+      // Find the entry with the largest intersection ratio that is intersecting
+      var best = null;
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          if (!best || entry.intersectionRatio > best.intersectionRatio) {
+            best = entry;
+          }
+        }
+      });
+      if (best) {
+        setActive(best.target.id);
+      } else {
+        // If nothing is intersecting from this batch, check all observed targets
+        // to see which one is currently visible (handles fast scrolling)
+      }
+    }, {
+      // Use a tall rootMargin so sections trigger well before they fully enter
+      rootMargin: '-10% 0px -60% 0px',
+      threshold: [0, 0.1, 0.25, 0.5]
+    });
+
+    sectionIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+  })();
+
   // ── Enroll form — email via Web3Forms (browser) + SMS via Netlify function ──
   document.getElementById('enrollForm').addEventListener('submit', function(e) {
     e.preventDefault();

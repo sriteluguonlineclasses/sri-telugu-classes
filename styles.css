@@ -139,6 +139,16 @@ h1, h2, h3, h4 { text-wrap: balance; }
   box-shadow: 0 1px 0 var(--border), 0 4px 16px rgba(83,74,183,.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  transition: background .25s ease, box-shadow .25s ease;
+}
+
+/* Scrolled state — more opaque bg + stronger shadow */
+.navbar.scrolled {
+  background: rgba(255,255,255,.98);
+  box-shadow:
+    0 1px 0 var(--border),
+    0 6px 28px rgba(83,74,183,.14),
+    0 2px 8px rgba(83,74,183,.08);
 }
 
 .logo {
@@ -185,6 +195,16 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 .nav-links a:hover { color: var(--primary); }
 .nav-links a:hover::after { transform: scaleX(1); }
+
+/* Active section link — highlighted while that section is in view */
+.nav-links a.nav-active {
+  color: var(--primary);
+  font-weight: 600;
+}
+.nav-links a.nav-active::after {
+  transform: scaleX(1);
+  background: var(--primary);
+}
 
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 
