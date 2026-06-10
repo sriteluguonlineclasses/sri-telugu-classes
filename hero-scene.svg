@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 260" preserveAspectRatio="xMidYMax meet">
+  <!-- Comic-style scene: kids learning Telugu. Flat duotone-purple illustration
+       designed to sit at the bottom of the dark hero gradient. -->
+  <defs>
+    <linearGradient id="bodyA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B94E8"/><stop offset="1" stop-color="#6A60D0"/>
+    </linearGradient>
+    <linearGradient id="bodyB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34CFA0"/><stop offset="1" stop-color="#1D9E75"/>
+    </linearGradient>
+    <linearGradient id="bodyC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F0B45C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground line -->
+  <rect x="0" y="248" width="1600" height="3" rx="1.5" fill="#ffffff" opacity=".08"/>
+
+  <!-- ════ Kid 1: reading a big book (left) ════ -->
+  <g>
+    <ellipse cx="170" cy="248" rx="92" ry="9" fill="#000" opacity=".18"/>
+    <!-- crossed legs -->
+    <path d="M110 244 q60 -26 120 0 q-12 10 -60 10 q-48 0 -60 -10z" fill="#4A4099"/>
+    <!-- body -->
+    <path d="M126 244 q-6 -68 44 -68 q50 0 44 68z" fill="url(#bodyA)"/>
+    <!-- head -->
+    <circle cx="170" cy="148" r="27" fill="#F2C9A0"/>
+    <!-- hair -->
+    <path d="M143 144 a27 27 0 0 1 54 0 q0 -36 -27 -36 q-27 0 -27 36z" fill="#2C2650"/>
+    <!-- face -->
+    <circle cx="161" cy="150" r="2.4" fill="#2C2650"/>
+    <circle cx="179" cy="150" r="2.4" fill="#2C2650"/>
+    <path d="M163 161 q7 5 14 0" stroke="#2C2650" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <!-- open book -->
+    <path d="M118 214 q26 -12 52 0 l0 26 q-26 -10 -52 0z" fill="#FFF6E8"/>
+    <path d="M222 214 q-26 -12 -52 0 l0 26 q26 -10 52 0z" fill="#FFEED4"/>
+    <path d="M170 214 l0 26" stroke="#C9A87C" stroke-width="2"/>
+    <!-- arms holding book -->
+    <path d="M132 204 q-14 14 -10 26" stroke="#F2C9A0" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M208 204 q14 14 10 26" stroke="#F2C9A0" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <!-- speech bubble -->
+    <g>
+      <rect x="216" y="92" width="84" height="48" rx="14" fill="#ffffff" opacity=".92"/>
+      <path d="M232 138 l-8 16 l22 -14z" fill="#ffffff" opacity=".92"/>
+      <text x="258" y="126" text-anchor="middle" font-family="'Noto Sans Telugu','Nirmala UI',sans-serif" font-size="26" font-weight="700" fill="#534AB7">అ ఆ</text>
+    </g>
+  </g>
+
+  <!-- ════ Kid 2: girl at desk with laptop, raising hand ════ -->
+  <g>
+    <ellipse cx="470" cy="248" rx="100" ry="9" fill="#000" opacity=".18"/>
+    <!-- raised arm -->
+    <path d="M508 178 q24 -22 26 -44" stroke="#E0AC80" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <circle cx="536" cy="128" r="7" fill="#E0AC80"/>
+    <!-- body -->
+    <path d="M436 232 q-4 -56 38 -56 q42 0 38 56z" fill="url(#bodyB)"/>
+    <!-- head -->
+    <circle cx="474" cy="152" r="25" fill="#E0AC80"/>
+    <!-- hair: bun + fringe -->
+    <circle cx="450" cy="130" r="9" fill="#2C2650"/>
+    <path d="M449 150 a25 25 0 0 1 50 0 q0 -34 -25 -34 q-25 0 -25 34z" fill="#2C2650"/>
+    <circle cx="466" cy="154" r="2.4" fill="#2C2650"/>
+    <circle cx="483" cy="154" r="2.4" fill="#2C2650"/>
+    <path d="M468 164 q6 5 12 0" stroke="#2C2650" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <!-- desk -->
+    <rect x="396" y="230" width="150" height="9" rx="4.5" fill="#7F77DD"/>
+    <rect x="404" y="239" width="8" height="12" fill="#5B51BC"/>
+    <rect x="530" y="239" width="8" height="12" fill="#5B51BC"/>
+    <!-- laptop -->
+    <path d="M444 230 l10 -26 l52 0 l10 26z" fill="#3A3380"/>
+    <path d="M448 228 l8 -21 l46 0 l8 21z" fill="#8F88E5"/>
+  </g>
+
+  <!-- ════ small plant divider ════ -->
+  <g opacity=".9">
+    <ellipse cx="745" cy="248" rx="34" ry="6" fill="#000" opacity=".15"/>
+    <rect x="731" y="220" width="28" height="26" rx="6" fill="#4A4099"/>
+    <path d="M745 220 q0 -26 -20 -34 q24 2 24 24 q4 -26 24 -30 q-18 14 -16 40z" fill="#2FC493"/>
+  </g>
+
+  <!-- ════ Teacher at board (center-right) ════ -->
+  <g>
+    <ellipse cx="1090" cy="248" rx="130" ry="10" fill="#000" opacity=".18"/>
+    <!-- easel board -->
+    <rect x="1112" y="86" width="150" height="104" rx="10" fill="#FFF6E8"/>
+    <rect x="1112" y="86" width="150" height="104" rx="10" fill="none" stroke="#7F77DD" stroke-width="3"/>
+    <text x="1187" y="142" text-anchor="middle" font-family="'Noto Sans Telugu','Nirmala UI',sans-serif" font-size="34" font-weight="700" fill="#534AB7">తెలుగు</text>
+    <path d="M1136 162 l102 0" stroke="#34CFA0" stroke-width="4" stroke-linecap="round"/>
+    <!-- easel legs -->
+    <path d="M1128 190 l-16 58 M1246 190 l16 58 M1187 190 l0 58" stroke="#5B51BC" stroke-width="6" stroke-linecap="round"/>
+    <!-- teacher figure -->
+    <path d="M1006 248 q-8 -92 46 -92 q54 0 46 92z" fill="url(#bodyA)"/>
+    <!-- saree drape -->
+    <path d="M1022 248 q-4 -78 30 -88 q-44 4 -42 88z" fill="#34CFA0" opacity=".85"/>
+    <!-- pointing arm -->
+    <path d="M1082 178 q30 -16 50 -34" stroke="#E0AC80" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <circle cx="1136" cy="141" r="6.5" fill="#E0AC80"/>
+    <!-- head -->
+    <circle cx="1052" cy="124" r="26" fill="#E0AC80"/>
+    <!-- hair with bun -->
+    <path d="M1026 122 a26 26 0 0 1 52 0 q0 -35 -26 -35 q-26 0 -26 35z" fill="#2C2650"/>
+    <circle cx="1024" cy="106" r="9" fill="#2C2650"/>
+    <circle cx="1044" cy="126" r="2.4" fill="#2C2650"/>
+    <circle cx="1061" cy="126" r="2.4" fill="#2C2650"/>
+    <path d="M1045 137 q7 5 14 0" stroke="#2C2650" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ════ Kid 3: on floor with laptop + headphones (right) ════ -->
+  <g>
+    <ellipse cx="1448" cy="248" rx="92" ry="9" fill="#000" opacity=".18"/>
+    <!-- legs out -->
+    <path d="M1448 240 q52 -8 78 4 q-8 8 -36 8 l-42 0z" fill="#4A4099"/>
+    <!-- body -->
+    <path d="M1408 246 q-6 -64 42 -64 q48 0 42 64z" fill="url(#bodyC)"/>
+    <!-- head -->
+    <circle cx="1450" cy="156" r="26" fill="#F2C9A0"/>
+    <path d="M1424 152 a26 26 0 0 1 52 0 q0 -35 -26 -35 q-26 0 -26 35z" fill="#2C2650"/>
+    <!-- headphones -->
+    <path d="M1422 148 a28 28 0 0 1 56 0" stroke="#34CFA0" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <rect x="1416" y="144" width="10" height="18" rx="5" fill="#34CFA0"/>
+    <rect x="1474" y="144" width="10" height="18" rx="5" fill="#34CFA0"/>
+    <circle cx="1442" cy="158" r="2.4" fill="#2C2650"/>
+    <circle cx="1459" cy="158" r="2.4" fill="#2C2650"/>
+    <path d="M1444 169 q6 5 12 0" stroke="#2C2650" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <!-- laptop on lap -->
+    <path d="M1414 232 l8 -20 l56 0 l8 20z" fill="#3A3380"/>
+    <path d="M1418 230 l6 -16 l52 0 l6 16z" fill="#8F88E5"/>
+    <!-- speech bubble -->
+    <g>
+      <rect x="1494" y="86" width="96" height="46" rx="14" fill="#ffffff" opacity=".92"/>
+      <path d="M1512 132 l-6 16 l20 -13z" fill="#ffffff" opacity=".92"/>
+      <text x="1542" y="119" text-anchor="middle" font-family="'Noto Sans Telugu','Nirmala UI',sans-serif" font-size="24" font-weight="700" fill="#1D9E75">బాగుంది!</text>
+    </g>
+  </g>
+
+  <!-- sparkles -->
+  <g fill="#FFD98A" opacity=".7">
+    <path d="M330 120 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z"/>
+    <path d="M905 96 l3.4 8.4 8.4 3.4 -8.4 3.4 -3.4 8.4 -3.4 -8.4 -8.4 -3.4 8.4 -3.4z"/>
+    <path d="M1330 70 l3 7.4 7.4 3 -7.4 3 -3 7.4 -3 -7.4 -7.4 -3 7.4 -3z"/>
+  </g>
+  <g fill="#9B94E8" opacity=".6">
+    <circle cx="640" cy="150" r="5"/>
+    <circle cx="970" cy="190" r="4"/>
+    <circle cx="1300" cy="160" r="5"/>
+  </g>
+</svg>
