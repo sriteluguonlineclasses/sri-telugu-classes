@@ -440,6 +440,20 @@
   </div>
 </section>
 
+<!-- ════════ MOBILE STICKY BOTTOM CTA ════════ -->
+<div class="mobile-cta-bar" id="mobileCta" aria-label="Quick enroll prompt" role="complementary">
+  <a href="#enroll" class="mobile-cta-btn" id="mobileCtaBtn">
+    <span class="mobile-cta-label">Free trial class</span>
+    <span class="mobile-cta-divider" aria-hidden="true">·</span>
+    <span class="mobile-cta-action">Enroll Now →</span>
+  </a>
+  <button class="mobile-cta-close" id="mobileCtaClose" aria-label="Dismiss">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="12" height="12">
+      <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
 <!-- ════════ WHATSAPP FLOAT BUTTON ════════ -->
 <a href="https://wa.me/18585377865"
    class="whatsapp-float"
@@ -832,6 +846,59 @@
         errP.textContent = 'Something went wrong. Please email sriteluguonlineclasses@gmail.com';
       });
   });
+
+  // ── Mobile sticky bottom CTA bar ──
+  (function() {
+    var bar      = document.getElementById('mobileCta');
+    var closeBtn = document.getElementById('mobileCtaClose');
+    var ctaBtn   = document.getElementById('mobileCtaBtn');
+    if (!bar || !closeBtn) return;
+
+    // If already dismissed this session, never show
+    if (sessionStorage.getItem('mobileCtaDismissed') === '1') {
+      bar.style.display = 'none';
+      return;
+    }
+
+    var shown = false;
+
+    function showBar() {
+      if (shown) return;
+      shown = true;
+      bar.classList.add('mobile-cta-bar--visible');
+    }
+
+    function onScroll() {
+      if (window.scrollY > 300) showBar();
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // in case page loads already scrolled
+
+    closeBtn.addEventListener('click', function() {
+      bar.classList.remove('mobile-cta-bar--visible');
+      bar.classList.add('mobile-cta-bar--hiding');
+      sessionStorage.setItem('mobileCtaDismissed', '1');
+      setTimeout(function() { bar.style.display = 'none'; }, 320);
+    });
+
+    // Hide the bar once user reaches enroll section
+    if ('IntersectionObserver' in window) {
+      var enrollSection = document.getElementById('enroll');
+      if (enrollSection) {
+        var enrollObs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              bar.classList.remove('mobile-cta-bar--visible');
+            } else if (shown) {
+              bar.classList.add('mobile-cta-bar--visible');
+            }
+          });
+        }, { threshold: 0.1 });
+        enrollObs.observe(enrollSection);
+      }
+    }
+  })();
 </script>
 </body>
 </html>
