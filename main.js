@@ -369,7 +369,7 @@
     });
   })();
 
-  // ── Enroll form — email via Web3Forms (browser) + SMS via Netlify function ──
+  // ── Enroll form — email notification via Web3Forms ──
   document.getElementById('enrollForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var email = emailInput.value.trim();
@@ -414,13 +414,7 @@
       })
     });
 
-    var smsPromise = fetch('/.netlify/functions/enroll', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, phone: phone })
-    });
-
-    Promise.all([emailPromise, smsPromise])
+    emailPromise
       .then(function() {
         document.getElementById('enrollSuccess').style.display = 'block';
         document.getElementById('enrollForm').reset();
