@@ -25,7 +25,7 @@ const STUDENTS = {
         dayName:   "Monday",
         timeIST:   "5:00 PM – 6:00 PM IST",
         course:    "Telugu Basics",
-        teacher:   "Mrs. Lakshmi Devi",
+        teacher:   "Jyothi",
         meetLink:  "https://meet.google.com/abc-defg-hij"
       },
       {
@@ -33,7 +33,7 @@ const STUDENTS = {
         dayName:   "Wednesday",
         timeIST:   "6:00 PM – 7:00 PM IST",
         course:    "Spoken Telugu",
-        teacher:   "Mr. Ravi Kumar",
+        teacher:   "Vijaya",
         meetLink:  "https://meet.google.com/xyz-uvwx-yzp"
       },
       {
@@ -41,7 +41,7 @@ const STUDENTS = {
         dayName:   "Friday",
         timeIST:   "4:30 PM – 5:30 PM IST",
         course:    "Culture & Stories",
-        teacher:   "Mrs. Padma Rao",
+        teacher:   "Vijaya",
         meetLink:  "https://meet.google.com/def-ghij-klm"
       }
     ],
