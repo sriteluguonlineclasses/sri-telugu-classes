@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /dashboard.html
+Disallow: /admin.html
 
 Sitemap: https://sriteluguonlineclasses.github.io/sri-telugu-classes/sitemap.xml

@@ -26,8 +26,8 @@ jobs:
       - name: Stage site files only
         run: |
           mkdir _site
-          cp index.html login.html dashboard.html 404.html _site/
-          cp styles.css main.js app.js _site/
+          cp index.html login.html dashboard.html 404.html admin.html _site/
+          cp styles.css main.js app.js students-data.js _site/
           cp favicon.svg favicon-32.png apple-touch-icon.png og-image.png _site/
           cp robots.txt sitemap.xml _site/
 

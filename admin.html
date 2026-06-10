@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Sri Telugu Classes</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #534AB7; --primary-light: #7F77DD; --accent: #1D9E75;
+      --bg: #F4F3FA; --card: #fff; --text: #232047; --muted: #6F6A92;
+      --border: #E3E1F0; --danger: #DC2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 80px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    header h1 { font-size: 1.3rem; }
+    header h1 small { display: block; font-size: .75rem; color: var(--muted); font-weight: 400; }
+    .btn { display: inline-block; border: none; cursor: pointer; font-family: inherit; font-weight: 600;
+           border-radius: 10px; padding: 10px 18px; font-size: .85rem; transition: opacity .15s; }
+    .btn:hover { opacity: .88; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+    .btn-danger { background: #FEE2E2; color: var(--danger); }
+    .btn-sm { padding: 6px 12px; font-size: .78rem; border-radius: 8px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 18px; }
+    .card h2 { font-size: 1rem; margin-bottom: 14px; }
+    label { display: block; font-size: .76rem; font-weight: 600; color: var(--muted); margin: 10px 0 4px; }
+    input, select, textarea { width: 100%; font-family: inherit; font-size: .85rem; padding: 9px 12px;
+      border: 1.5px solid var(--border); border-radius: 9px; background: #fff; color: var(--text); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); }
+    textarea { resize: vertical; min-height: 60px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 14px; }
+    @media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    th { text-align: left; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; padding: 8px 10px; border-bottom: 1.5px solid var(--border); }
+    td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+    .row-item { background: #FAFAFE; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 14px; margin-bottom: 10px; position: relative; }
+    .row-item .btn-danger { position: absolute; top: 10px; right: 10px; }
+    .status { font-size: .8rem; padding: 10px 14px; border-radius: 9px; margin: 10px 0; display: none; }
+    .status.ok { display: block; background: #D1FAE5; color: #065F46; }
+    .status.err { display: block; background: #FEE2E2; color: #991B1B; }
+    .status.busy { display: block; background: #EDE9FE; color: #5B21B6; }
+    .pill { display: inline-block; background: #EDE9FE; color: var(--primary); border-radius: 99px; padding: 2px 10px; font-size: .72rem; font-weight: 600; }
+    .hint { font-size: .76rem; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+    .topactions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dirty-dot { display: none; width: 8px; height: 8px; border-radius: 50%; background: #F59E0B; position: absolute; top: -2px; right: -2px; }
+    .pubwrap { position: relative; display: inline-block; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>🛠️ Admin Console <small>Sri Telugu Classes — students, schedules &amp; notices</small></h1>
+    <div class="topactions" id="topActions" style="display:none;">
+      <button class="btn btn-ghost btn-sm" onclick="reloadData()">↻ Reload</button>
+      <span class="pubwrap">
+        <button class="btn btn-accent" id="publishBtn" onclick="publish()">Publish Changes</button>
+        <span class="dirty-dot" id="dirtyDot"></span>
+      </span>
+      <button class="btn btn-ghost btn-sm" onclick="forgetToken()">Lock</button>
+    </div>
+  </header>
+
+  <div class="status" id="statusBox"></div>
+
+  <!-- ── Token gate ── -->
+  <div class="card" id="gate">
+    <h2>🔑 Unlock the console</h2>
+    <p class="hint">Paste your GitHub access token. It is stored only in this browser on this device — use this page only on your own computer.</p>
+    <label for="tokenInput">GitHub token</label>
+    <input type="password" id="tokenInput" placeholder="github_pat_…">
+    <div style="margin-top:14px;"><button class="btn btn-primary" onclick="saveToken()">Unlock</button></div>
+    <p class="hint">This is the same token saved in the <code>.env</code> file on your computer. It lets this page save student changes to GitHub; the website updates itself about a minute later.</p>
+  </div>
+
+  <!-- ── Student list ── -->
+  <div class="card" id="listCard" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <h2 style="margin:0;">👨‍🎓 Students <span class="pill" id="countPill">0</span></h2>
+      <button class="btn btn-primary btn-sm" onclick="newStudent()">+ Add Student</button>
+    </div>
+    <div style="overflow-x:auto;margin-top:10px;">
+      <table>
+        <thead><tr><th>Name</th><th>Email (login)</th><th>Batch</th><th>Classes/wk</th><th></th></tr></thead>
+        <tbody id="studentRows"></tbody>
+      </table>
+    </div>
+    <p class="hint">After any change, click <strong>Publish Changes</strong> (top right) to make it live.</p>
+  </div>
+
+  <!-- ── Editor ── -->
+  <div class="card" id="editorCard" style="display:none;">
+    <h2 id="editorTitle">Edit Student</h2>
+
+    <div class="grid2">
+      <div><label>Full name</label><input id="fName" placeholder="Arjun Reddy"></div>
+      <div><label>Email (used to log in)</label><input id="fEmail" placeholder="student@example.com"></div>
+      <div><label>Password</label><input id="fPassword" placeholder="choose a password"></div>
+      <div><label>Batch</label><input id="fBatch" placeholder="Batch A"></div>
+      <div><label>Level</label>
+        <select id="fLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+      </div>
+    </div>
+
+    <h2 style="margin-top:22px;">📊 Attendance</h2>
+    <div class="grid3">
+      <div><label>Total classes</label><input id="fTotal" type="number" min="0" value="0"></div>
+      <div><label>Attended</label><input id="fAttended" type="number" min="0" value="0"></div>
+      <div><label>Upcoming</label><input id="fUpcoming" type="number" min="0" value="0"></div>
+    </div>
+
+    <h2 style="margin-top:22px;">📅 Weekly classes <button class="btn btn-ghost btn-sm" onclick="addScheduleRow()">+ Add class</button></h2>
+    <div id="scheduleRows"></div>
+
+    <h2 style="margin-top:22px;">📢 Notices <button class="btn btn-ghost btn-sm" onclick="addNoticeRow()">+ Add notice</button></h2>
+    <div id="noticeRows"></div>
+
+    <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="saveStudent()">Save Student</button>
+      <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-danger" id="deleteBtn" onclick="deleteStudent()" style="margin-left:auto;">Delete Student</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var OWNER = 'sriteluguonlineclasses', REPO = 'sri-telugu-classes', PATH = 'students-data.js', BRANCH = 'main';
+var API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
+var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+var token = null, data = {}, sha = null, dirty = false, editingEmail = null;
+
+// ── UTF-8-safe base64 ──
+function b64enc(str) {
+  var bytes = new TextEncoder().encode(str), bin = '';
+  bytes.forEach(function(b) { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+function b64dec(b64) {
+  var bin = atob(b64.replace(/\n/g, '')), bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+function status(msg, kind) {
+  var el = document.getElementById('statusBox');
+  el.className = 'status ' + (kind || 'ok');
+  el.textContent = msg;
+  if (kind === 'ok') setTimeout(function() { el.className = 'status'; }, 4000);
+}
+function setDirty(d) {
+  dirty = d;
+  document.getElementById('dirtyDot').style.display = d ? 'block' : 'none';
+}
+
+// ── Token handling ──
+function saveToken() {
+  var t = document.getElementById('tokenInput').value.trim();
+  if (!t) { status('Please paste a token first.', 'err'); return; }
+  token = t;
+  try { localStorage.setItem('stc_admin_token', t); } catch(e) {}
+  unlock();
+}
+function forgetToken() {
+  try { localStorage.removeItem('stc_admin_token'); } catch(e) {}
+  location.reload();
+}
+function unlock() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('topActions').style.display = 'flex';
+  document.getElementById('listCard').style.display = 'block';
+  reloadData();
+}
+
+// ── Load & publish ──
+function reloadData() {
+  status('Loading current student data from GitHub…', 'busy');
+  fetch(API + '?ref=' + BRANCH + '&t=' + Date.now(), {
+    headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' }
+  }).then(function(r) {
+    if (r.status === 401 || r.status === 403) throw new Error('Token rejected — check it and try again.');
+    if (!r.ok) throw new Error('GitHub error ' + r.status);
+    return r.json();
+  }).then(function(j) {
+    sha = j.sha;
+    var src = b64dec(j.content).trim();
+    src = src.replace(/^window\.STUDENTS\s*=\s*/, '').replace(/;\s*$/, '');
+    data = JSON.parse(src);
+    setDirty(false);
+    renderList();
+    status('Loaded ' + Object.keys(data).length + ' student(s).', 'ok');
+  }).catch(function(e) { status(e.message, 'err'); });
+}
+
+function publish() {
+  if (!sha) { status('Load data first.', 'err'); return; }
+  var btn = document.getElementById('publishBtn');
+  btn.disabled = true;
+  status('Publishing to GitHub…', 'busy');
+  var content = 'window.STUDENTS = ' + JSON.stringify(data, null, 2) + ';\n';
+  fetch(API, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+    body: JSON.stringify({ message: 'Admin: update student data', content: b64enc(content), sha: sha, branch: BRANCH })
+  }).then(function(r) {
+    if (!r.ok) return r.json().then(function(j) { throw new Error(j.message || ('GitHub error ' + r.status)); });
+    return r.json();
+  }).then(function(j) {
+    sha = j.content.sha;
+    setDirty(false);
+    status('Published! The live site updates in about a minute.', 'ok');
+  }).catch(function(e) { status('Publish failed: ' + e.message, 'err'); })
+    .finally(function() { btn.disabled = false; });
+}
+
+// ── Student list ──
+function renderList() {
+  var tbody = document.getElementById('studentRows');
+  tbody.innerHTML = '';
+  var emails = Object.keys(data);
+  document.getElementById('countPill').textContent = emails.length;
+  emails.forEach(function(email) {
+    var s = data[email];
+    var tr = document.createElement('tr');
+    var classes = (s.schedule || []).length;
+    tr.innerHTML = '<td><strong></strong></td><td></td><td></td><td>' + classes + '</td>' +
+      '<td style="text-align:right;"><button class="btn btn-primary btn-sm">Edit</button></td>';
+    tr.querySelector('strong').textContent = s.name || '(no name)';
+    tr.children[1].textContent = email;
+    tr.children[2].textContent = s.batch || '—';
+    tr.querySelector('button').onclick = function() { openEditor(email); };
+    tbody.appendChild(tr);
+  });
+  if (!emails.length) tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No students yet — click “+ Add Student”.</td></tr>';
+}
+
+// ── Editor ──
+function newStudent() { openEditor(null); }
+
+function openEditor(email) {
+  editingEmail = email;
+  var s = email ? data[email] : { attendance: { total: 0, attended: 0, upcoming: 0 }, schedule: [], notices: [] };
+  document.getElementById('editorTitle').textContent = email ? ('Edit: ' + (s.name || email)) : 'Add New Student';
+  document.getElementById('deleteBtn').style.display = email ? 'inline-block' : 'none';
+  document.getElementById('fName').value = s.name || '';
+  document.getElementById('fEmail').value = email || '';
+  document.getElementById('fPassword').value = s.password || '';
+  document.getElementById('fBatch').value = s.batch || '';
+  document.getElementById('fLevel').value = s.level || 'Beginner';
+  var a = s.attendance || {};
+  document.getElementById('fTotal').value = a.total || 0;
+  document.getElementById('fAttended').value = a.attended || 0;
+  document.getElementById('fUpcoming').value = a.upcoming || 0;
+  document.getElementById('scheduleRows').innerHTML = '';
+  (s.schedule || []).forEach(addScheduleRow);
+  document.getElementById('noticeRows').innerHTML = '';
+  (s.notices || []).forEach(addNoticeRow);
+  document.getElementById('editorCard').style.display = 'block';
+  document.getElementById('editorCard').scrollIntoView({ behavior: 'smooth' });
+}
+function closeEditor() {
+  document.getElementById('editorCard').style.display = 'none';
+  editingEmail = null;
+}
+
+function addScheduleRow(item) {
+  item = (item && item.dayName !== undefined) ? item : {};
+  var div = document.createElement('div');
+  div.className = 'row-item sched-row';
+  div.innerHTML =
+    '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
+    '<div class="grid2">' +
+      '<div><label>Day</label><select class="rDay">' +
+        DAYS.map(function(d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div><label>Time (shown to student)</label><input class="rTime" placeholder="5:00 PM – 6:00 PM IST"></div>' +
+      '<div><label>Course name</label><input class="rCourse" placeholder="Telugu Class"></div>' +
+      '<div><label>Teacher</label><select class="rTeacher"><option>Jyothi</option><option>Vijaya</option></select></div>' +
+    '</div>' +
+    '<label>Google Meet link</label><input class="rMeet" placeholder="https://meet.google.com/…">';
+  document.getElementById('scheduleRows').appendChild(div);
+  if (item.dayOfWeek !== undefined) div.querySelector('.rDay').value = item.dayOfWeek;
+  div.querySelector('.rTime').value = item.timeIST || '';
+  div.querySelector('.rCourse').value = item.course || '';
+  if (item.teacher) div.querySelector('.rTeacher').value = item.teacher;
+  div.querySelector('.rMeet').value = item.meetLink || '';
+}
+
+function addNoticeRow(item) {
+  item = (item && item.title !== undefined) ? item : {};
+  var div = document.createElement('div');
+  div.className = 'row-item notice-row';
+  div.innerHTML =
+    '<button class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>' +
+    '<div class="grid2">' +
+      '<div><label>Type</label><select class="rType"><option value="info">Info (blue)</option><option value="default">Normal</option><option value="urgent">Urgent (red)</option></select></div>' +
+      '<div><label>Date label</label><input class="rDate" placeholder="Jun 10, 2026"></div>' +
+    '</div>' +
+    '<label>Title</label><input class="rTitle" placeholder="Notice title">' +
+    '<label>Message</label><textarea class="rBody" placeholder="Notice text shown to the student"></textarea>';
+  document.getElementById('noticeRows').appendChild(div);
+  if (item.type) div.querySelector('.rType').value = item.type;
+  div.querySelector('.rDate').value = item.date || '';
+  div.querySelector('.rTitle').value = item.title || '';
+  div.querySelector('.rBody').value = item.body || '';
+}
+
+function saveStudent() {
+  var name = document.getElementById('fName').value.trim();
+  var email = document.getElementById('fEmail').value.trim().toLowerCase();
+  var password = document.getElementById('fPassword').value;
+  if (!name || !email || !password) { status('Name, email and password are required.', 'err'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status('That email address does not look valid.', 'err'); return; }
+  if (!editingEmail && data[email]) { status('A student with that email already exists.', 'err'); return; }
+
+  var initials = name.split(/\s+/).map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+  var schedule = [].map.call(document.querySelectorAll('.sched-row'), function(div) {
+    var dow = parseInt(div.querySelector('.rDay').value, 10);
+    return {
+      dayOfWeek: dow, dayName: DAYS[dow],
+      timeIST: div.querySelector('.rTime').value.trim(),
+      course: div.querySelector('.rCourse').value.trim(),
+      teacher: div.querySelector('.rTeacher').value,
+      meetLink: div.querySelector('.rMeet').value.trim()
+    };
+  });
+  var notices = [].map.call(document.querySelectorAll('.notice-row'), function(div) {
+    return {
+      type: div.querySelector('.rType').value,
+      title: div.querySelector('.rTitle').value.trim(),
+      body: div.querySelector('.rBody').value.trim(),
+      date: div.querySelector('.rDate').value.trim()
+    };
+  }).filter(function(n) { return n.title || n.body; });
+
+  var record = {
+    password: password, name: name,
+    batch: document.getElementById('fBatch').value.trim(),
+    level: document.getElementById('fLevel').value,
+    email: email, avatar: initials,
+    attendance: {
+      total: parseInt(document.getElementById('fTotal').value, 10) || 0,
+      attended: parseInt(document.getElementById('fAttended').value, 10) || 0,
+      upcoming: parseInt(document.getElementById('fUpcoming').value, 10) || 0
+    },
+    schedule: schedule, notices: notices
+  };
+
+  if (editingEmail && editingEmail !== email) delete data[editingEmail];
+  data[email] = record;
+  setDirty(true);
+  renderList();
+  closeEditor();
+  status('Saved. Click “Publish Changes” to make it live.', 'ok');
+}
+
+function deleteStudent() {
+  if (!editingEmail) return;
+  if (!confirm('Delete ' + editingEmail + '? This removes their login and dashboard.')) return;
+  delete data[editingEmail];
+  setDirty(true);
+  renderList();
+  closeEditor();
+  status('Deleted. Click “Publish Changes” to make it live.', 'ok');
+}
+
+// ── Boot ──
+(function() {
+  try { token = localStorage.getItem('stc_admin_token'); } catch(e) {}
+  if (token) unlock();
+})();
+window.addEventListener('beforeunload', function(e) {
+  if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
