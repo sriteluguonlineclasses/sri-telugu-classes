@@ -318,6 +318,66 @@ h1, h2, h3, h4 { text-wrap: balance; }
   letter-spacing: -0.02em;
   margin-bottom: 12px;
 }
+/* ── Bilingual hero word crossfade ── */
+.hero-bilingual {
+  display: inline-block;
+  position: relative;
+  /* Reserve enough horizontal space for the wider of the two words.
+     "తెలుగు" renders slightly wider at this weight, so we let it
+     set the natural width and prevent layout reflow. */
+  white-space: nowrap;
+}
+
+.hero-bilingual-en,
+.hero-bilingual-te {
+  display: inline-block;
+}
+
+/* Telugu script word: absolutely stacked on top of the English word */
+.hero-bilingual-te {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Match hero h1 line-height baseline so it doesn't shift the line */
+  top: 0;
+  /* Telugu script renders slightly taller — align visually to cap-height */
+  font-size: .88em;
+  letter-spacing: .01em;
+}
+
+/* ── Keyframe definitions ── */
+@keyframes bilingual-fade-en {
+  /* English word: visible → invisible → visible */
+  0%, 38%   { opacity: 1; }
+  48%, 88%  { opacity: 0; }
+  100%      { opacity: 1; }
+}
+@keyframes bilingual-fade-te {
+  /* Telugu word: invisible → visible → invisible */
+  0%, 38%   { opacity: 0; }
+  48%, 88%  { opacity: 1; }
+  100%      { opacity: 0; }
+}
+
+/* ── Apply animations (only when motion is OK) ── */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-bilingual-en {
+    animation: bilingual-fade-en 6s ease-in-out infinite;
+  }
+  .hero-bilingual-te {
+    animation: bilingual-fade-te 6s ease-in-out infinite;
+    /* Start Telugu word hidden */
+    opacity: 0;
+  }
+}
+
+/* ── Reduced-motion fallback: show English, hide Telugu overlay ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bilingual-te {
+    display: none;
+  }
+}
+
 .hero-telugu {
   font-family: 'Noto Sans Telugu', sans-serif;
   font-size: clamp(1.3rem, 3vw, 2.2rem);
