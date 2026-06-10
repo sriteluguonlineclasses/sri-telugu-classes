@@ -776,3 +776,28 @@
     }, 4000);
   }
 })();
+// ── WhatsApp teacher chooser ──
+(function() {
+  var btn = document.getElementById('whatsappBtn');
+  var menu = document.getElementById('whatsappMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var open = menu.hidden;
+    menu.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e) {
+    if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !menu.hidden) {
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.focus();
+    }
+  });
+})();
