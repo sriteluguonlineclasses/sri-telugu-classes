@@ -95,7 +95,7 @@
 
   <div class="courses-grid">
 
-    <div class="course-card">
+    <div class="course-card reveal" data-reveal-delay="1">
       <div class="course-card-bar"></div>
       <div class="course-card-body">
         <div class="course-icon" style="background:rgba(83,74,183,.1);">📚</div>
@@ -108,7 +108,7 @@
       </div>
     </div>
 
-    <div class="course-card">
+    <div class="course-card reveal" data-reveal-delay="2">
       <div class="course-card-bar"></div>
       <div class="course-card-body">
         <div class="course-icon" style="background:rgba(29,158,117,.1);">✍️</div>
@@ -121,7 +121,7 @@
       </div>
     </div>
 
-    <div class="course-card">
+    <div class="course-card reveal" data-reveal-delay="3">
       <div class="course-card-bar"></div>
       <div class="course-card-body">
         <div class="course-icon" style="background:rgba(245,158,11,.1);">🗣️</div>
@@ -134,7 +134,7 @@
       </div>
     </div>
 
-    <div class="course-card">
+    <div class="course-card reveal" data-reveal-delay="4">
       <div class="course-card-bar"></div>
       <div class="course-card-body">
         <div class="course-icon" style="background:rgba(239,68,68,.1);">🧒</div>
@@ -161,7 +161,7 @@
 
   <div class="testimonials-grid">
 
-    <div class="testimonial-card">
+    <div class="testimonial-card reveal" data-reveal-delay="1">
       <div class="stars">★★★★★</div>
       <p class="testimonial-text">"My daughter was born in the US and couldn't speak a word of Telugu. After 3 months with Sri Telugu Classes, she's reading children's books and having full conversations with her grandparents in India. The teachers are patient, warm, and genuinely care."</p>
       <div class="testimonial-author">
@@ -173,7 +173,7 @@
       </div>
     </div>
 
-    <div class="testimonial-card">
+    <div class="testimonial-card reveal" data-reveal-delay="2">
       <div class="stars">★★★★★</div>
       <p class="testimonial-text">"The Spoken Telugu course is fantastic. I went from understanding 20% to having full conversations with my relatives in Hyderabad. Live sessions made all the difference."</p>
       <div class="testimonial-author">
@@ -185,7 +185,7 @@
       </div>
     </div>
 
-    <div class="testimonial-card">
+    <div class="testimonial-card reveal" data-reveal-delay="3">
       <div class="stars">★★★★★</div>
       <p class="testimonial-text">"My kids don't just learn the language — they learn about Ugadi, Harikatha, and our identity. I'm so proud of what they know now."</p>
       <div class="testimonial-author">
@@ -212,7 +212,7 @@
 
     <div class="faq-list" role="list">
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="1" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a1">
           <span>What age groups do you teach?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -222,7 +222,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="2" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a2">
           <span>What platform do you use for live classes?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -232,7 +232,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="3" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a3">
           <span>What if my child misses a class?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -242,7 +242,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="4" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a4">
           <span>How many students are in each batch?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -252,7 +252,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="5" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a5">
           <span>How long does it take to see real progress?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -262,7 +262,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="6" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a6">
           <span>Is the trial class really free? What does it cover?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -272,7 +272,7 @@
         </div>
       </div>
 
-      <div class="faq-item" role="listitem">
+      <div class="faq-item reveal" data-reveal-delay="7" role="listitem">
         <button class="faq-question" aria-expanded="false" aria-controls="faq-a7">
           <span>What are the fees, and are there any hidden charges?</span>
           <span class="faq-icon" aria-hidden="true"></span>
@@ -514,6 +514,34 @@
       }
     });
   });
+
+  // ── Scroll-reveal animations ──
+  (function() {
+    // Bail out if browser doesn't support IntersectionObserver or prefers reduced motion
+    if (!('IntersectionObserver' in window)) {
+      // Fallback: immediately reveal everything
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        el.classList.add('revealed');
+      });
+      return;
+    }
+
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target); // animate once
+        }
+      });
+    }, {
+      threshold: 0.12,      // trigger when 12% of element is visible
+      rootMargin: '0px 0px -32px 0px'  // small bottom offset so elements reveal just before reaching viewport edge
+    });
+
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      revealObserver.observe(el);
+    });
+  })();
 
   // ── Enroll form — email via Web3Forms (browser) + SMS via Netlify function ──
   document.getElementById('enrollForm').addEventListener('submit', function(e) {

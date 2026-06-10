@@ -1143,6 +1143,42 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .sidebar-overlay.active { display: block; }
 
 /* ============================
+   SCROLL-REVEAL ANIMATIONS
+   ============================ */
+
+/* Initial hidden state — elements start invisible and shifted down */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s cubic-bezier(.4,0,.2,1), transform 0.55s cubic-bezier(.4,0,.2,1);
+  will-change: opacity, transform;
+}
+
+/* Visible state — triggered by IntersectionObserver adding .revealed */
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for grid children */
+.reveal[data-reveal-delay="1"] { transition-delay: 0.05s; }
+.reveal[data-reveal-delay="2"] { transition-delay: 0.13s; }
+.reveal[data-reveal-delay="3"] { transition-delay: 0.21s; }
+.reveal[data-reveal-delay="4"] { transition-delay: 0.29s; }
+.reveal[data-reveal-delay="5"] { transition-delay: 0.37s; }
+.reveal[data-reveal-delay="6"] { transition-delay: 0.45s; }
+.reveal[data-reveal-delay="7"] { transition-delay: 0.53s; }
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================
    RESPONSIVE
    ============================ */
 @media (max-width: 960px) {
