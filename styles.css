@@ -2862,3 +2862,42 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .wotd-card.wotd-hiding  { animation: none; opacity: 0; }
   .wotd-telugu            { animation: none; }
 }
+
+/* ============================
+   SCROLL PROGRESS BAR
+   ============================ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--primary)      0%,
+    var(--primary-light) 50%,
+    var(--accent)       100%
+  );
+  z-index: 9999;
+  /* Glow effect for depth */
+  box-shadow: 0 0 8px rgba(83, 74, 183, 0.55), 0 0 2px rgba(83, 74, 183, 0.35);
+  /* Smooth progress updates without janky jumps */
+  will-change: width;
+  /* Rounded right cap */
+  border-radius: 0 2px 2px 0;
+  transition: width 0.08s linear;
+  pointer-events: none;
+}
+
+/* Hide completely when at top (width ~0) or fully scrolled (handled by JS) */
+.scroll-progress-bar.spb-hidden {
+  opacity: 0;
+  transition: width 0.08s linear, opacity 0.3s ease;
+}
+
+/* Respect reduced motion: disable the transition smoothing */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar {
+    transition: none;
+  }
+}
