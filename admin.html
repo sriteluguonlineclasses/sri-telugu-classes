@@ -308,6 +308,7 @@ function openTeacherEditor(name) {
   closeEditor();
   document.getElementById('teacherEditorTitle').textContent = '📅 ' + name + ' — Weekly Schedule';
   document.getElementById('tScheduleRows').innerHTML = '';
+  document.getElementById('tzSelect').value = (data.teachers[name] || {}).timezone || 'IST';
   ((data.teachers[name] || {}).schedule || []).forEach(addClassRow);
   document.getElementById('teacherEditor').style.display = 'block';
   document.getElementById('teacherEditor').scrollIntoView({ behavior: 'smooth' });
