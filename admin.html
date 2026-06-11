@@ -379,11 +379,12 @@ function updateTimezoneLabels() {
 
 function saveTeacher() {
   if (!editingTeacher) return;
+  var tz = document.getElementById('tzSelect').value;
   var schedule = [].map.call(document.querySelectorAll('.class-row'), function(div) {
     var dow = parseInt(div.querySelector('.rDay').value, 10);
     var start = div.querySelector('.rStart').value;
     var end = div.querySelector('.rEnd').value;
-    var label = start ? (to12h(start) + (end ? ' – ' + to12h(end) : '') + ' IST') : '';
+    var label = start ? (to12h(start) + (end ? ' – ' + to12h(end) : '') + ' ' + tz) : '';
     return {
       dayOfWeek: dow, dayName: DAYS[dow],
       timeStart: start, timeEnd: end,
@@ -395,6 +396,7 @@ function saveTeacher() {
   }).filter(function(c) { return c.course || c.timeIST; });
   if (!data.teachers[editingTeacher]) data.teachers[editingTeacher] = {};
   data.teachers[editingTeacher].schedule = schedule;
+  data.teachers[editingTeacher].timezone = tz;
   setDirty(true);
   renderTeachers();
   renderList();
