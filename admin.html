@@ -103,6 +103,13 @@
   <!-- ── Teacher editor ── -->
   <div class="card" id="teacherEditor" style="display:none;">
     <h2 id="teacherEditorTitle">Teacher Schedule</h2>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <label style="margin:0;white-space:nowrap;">Timezone</label>
+      <select id="tzSelect" style="width:auto;" onchange="updateTimezoneLabels()">
+        <option value="IST">IST (India)</option>
+        <option value="PST">PST (US Pacific)</option>
+      </select>
+    </div>
     <div id="tScheduleRows"></div>
     <button class="btn btn-ghost btn-sm" onclick="addClassRow()">+ Add class</button>
     <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;">
