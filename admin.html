@@ -347,8 +347,8 @@ function addClassRow(item) {
       '<div><label>Day</label><select class="rDay">' +
         DAYS.map(function(d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('') +
       '</select></div>' +
-      '<div><label>Starts (IST)</label><input type="time" class="rStart"></div>' +
-      '<div><label>Ends (IST)</label><input type="time" class="rEnd"></div>' +
+      '<div><label class="rTzLabel">Starts (IST)</label><input type="time" class="rStart"></div>' +
+      '<div><label class="rTzLabel">Ends (IST)</label><input type="time" class="rEnd"></div>' +
     '</div>' +
     '<div class="grid2">' +
       '<div><label>Course name</label><input class="rCourse" placeholder="Telugu Class"></div>' +
@@ -356,6 +356,10 @@ function addClassRow(item) {
     '</div>' +
     '<label>Google Meet link</label><input class="rMeet" placeholder="https://meet.google.com/…">';
   document.getElementById('tScheduleRows').appendChild(div);
+  var _tz = (document.getElementById('tzSelect') && document.getElementById('tzSelect').value) || 'IST';
+  div.querySelectorAll('.rTzLabel').forEach(function(el) {
+    el.textContent = el.textContent.replace(/\(IST\)|\(PST\)/, '(' + _tz + ')');
+  });
   if (item.dayOfWeek !== undefined) div.querySelector('.rDay').value = item.dayOfWeek;
   var times = (item.timeStart && item.timeEnd) ? [item.timeStart, item.timeEnd] : parseTimeRange(item.timeIST);
   div.querySelector('.rStart').value = times[0] || '';
@@ -363,6 +367,13 @@ function addClassRow(item) {
   div.querySelector('.rCourse').value = item.course || '';
   div.querySelector('.rBatch').value = item.batch || '';
   div.querySelector('.rMeet').value = item.meetLink || '';
+}
+
+function updateTimezoneLabels() {
+  var tz = document.getElementById('tzSelect').value;
+  document.querySelectorAll('.rTzLabel').forEach(function(el) {
+    el.textContent = el.textContent.replace(/\(IST\)|\(PST\)/, '(' + tz + ')');
+  });
 }
 
 function saveTeacher() {
