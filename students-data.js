@@ -15,22 +15,77 @@ window.STC_DATA = {
     "Vijaya": {
       "schedule": [
         {
-          "dayOfWeek": 3,
-          "dayName": "Wednesday",
-          "timeIST": "6:00 PM – 7:00 PM IST",
-          "course": "Spoken Telugu",
-          "batch": "Batch B",
+          "dayOfWeek": 1,
+          "dayName": "Monday",
+          "timeStart": "15:30",
+          "timeEnd": "16:15",
+          "timeIST": "3:30 PM – 4:15 PM PST",
+          "course": "Basic",
+          "batch": "3.30pm batch",
           "meetLink": "https://meet.google.com/xyz-uvwx-yzp"
+        },
+        {
+          "dayOfWeek": 2,
+          "dayName": "Tuesday",
+          "timeStart": "16:30",
+          "timeEnd": "17:15",
+          "timeIST": "4:30 PM – 5:15 PM PST",
+          "course": "Basic",
+          "batch": "4.30 pm batch",
+          "meetLink": "https://meet.google.com/def-ghij-klm"
         },
         {
           "dayOfWeek": 5,
           "dayName": "Friday",
-          "timeIST": "4:30 PM – 5:30 PM IST",
-          "course": "Culture & Stories",
-          "batch": "Batch B",
-          "meetLink": "https://meet.google.com/def-ghij-klm"
+          "timeStart": "03:30",
+          "timeEnd": "16:15",
+          "timeIST": "3:30 AM – 4:15 PM PST",
+          "course": "Basic",
+          "batch": "3.30pm friday",
+          "meetLink": ""
+        },
+        {
+          "dayOfWeek": 5,
+          "dayName": "Friday",
+          "timeStart": "17:00",
+          "timeEnd": "17:45",
+          "timeIST": "5:00 PM – 5:45 PM PST",
+          "course": "Basic",
+          "batch": "5pm batch",
+          "meetLink": ""
+        },
+        {
+          "dayOfWeek": 4,
+          "dayName": "Thursday",
+          "timeStart": "08:00",
+          "timeEnd": "08:45",
+          "timeIST": "8:00 AM – 8:45 AM PST",
+          "course": "Basic",
+          "batch": "8am thursday",
+          "meetLink": ""
+        },
+        {
+          "dayOfWeek": 6,
+          "dayName": "Saturday",
+          "timeStart": "08:00",
+          "timeEnd": "08:45",
+          "timeIST": "8:00 AM – 8:45 AM PST",
+          "course": "Basic",
+          "batch": "8am saturday",
+          "meetLink": ""
+        },
+        {
+          "dayOfWeek": 4,
+          "dayName": "Thursday",
+          "timeStart": "16:00",
+          "timeEnd": "16:45",
+          "timeIST": "4:00 PM – 4:45 PM PST",
+          "course": "Basic",
+          "batch": "4pm Thursday",
+          "meetLink": ""
         }
-      ]
+      ],
+      "timezone": "PST"
     }
   },
   "students": {
