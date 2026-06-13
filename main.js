@@ -423,29 +423,32 @@
     btn.textContent = 'Sending…';
     btn.disabled = true;
 
+    // Send as multipart FormData — a "simple" CORS request, so no preflight (OPTIONS)
+    // round-trip. More robust than a JSON Content-Type, which triggers preflight.
+    var fd = new FormData();
+    fd.append('access_key', '9f5b7aa0-f795-4602-80e6-aeee26c3082c');
+    fd.append('subject',    'New Trial Request — ' + name + (location ? ' (' + location + ')' : ''));
+    fd.append('from_name',  'Sri Telugu Classes Website');
+    fd.append('name',       name);
+    fd.append('email',      email);
+    fd.append('phone',      phone || 'Not provided');
+    fd.append('location',   location || 'Not provided');
+    fd.append('learner',    learner || 'Not specified');
+    fd.append('age',        age || 'Not provided');
+    fd.append('course',     course || 'Not specified');
+    fd.append('message',
+      'New free-trial request:\n' +
+      'Name: ' + name + '\n' +
+      'Email: ' + email + '\n' +
+      'WhatsApp/Phone: ' + (phone || 'Not provided') + '\n' +
+      'Location: ' + (location || 'Not provided') + '\n' +
+      'Who is learning: ' + (learner || 'Not specified') + '\n' +
+      'Learner age: ' + (age || 'Not provided') + '\n' +
+      'Course of interest: ' + (course || 'Not specified'));
+
     var emailPromise = fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        access_key: '9f5b7aa0-f795-4602-80e6-aeee26c3082c',
-        subject:    'New Trial Request — ' + name + (location ? ' (' + location + ')' : ''),
-        from_name:  'Sri Telugu Classes Website',
-        name:       name,
-        email:      email,
-        phone:      phone || 'Not provided',
-        location:   location || 'Not provided',
-        learner:    learner || 'Not specified',
-        age:        age || 'Not provided',
-        course:     course || 'Not specified',
-        message:    'New free-trial request:\n' +
-                    'Name: ' + name + '\n' +
-                    'Email: ' + email + '\n' +
-                    'WhatsApp/Phone: ' + (phone || 'Not provided') + '\n' +
-                    'Location: ' + (location || 'Not provided') + '\n' +
-                    'Who is learning: ' + (learner || 'Not specified') + '\n' +
-                    'Learner age: ' + (age || 'Not provided') + '\n' +
-                    'Course of interest: ' + (course || 'Not specified')
-      })
+      body: fd
     });
 
     // ── Also log the lead to a Google Sheet (fire-and-forget) ──
