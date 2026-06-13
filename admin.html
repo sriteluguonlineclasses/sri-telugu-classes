@@ -6,6 +6,12 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Admin — Sri Telugu Classes</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="STC Admin">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -65,6 +71,15 @@
     .tcard .tname { font-weight: 700; font-size: 1rem; color: var(--text); }
     .tcard .tmeta { font-size: .76rem; color: var(--muted); }
     .tcard .tarrow { margin-left: auto; color: var(--primary); font-size: 1.2rem; }
+
+    /* iPhone comfort: 16px inputs avoid Safari zoom-on-focus; bigger tap targets */
+    input, select, button { font-size: 16px; }
+    button { min-height: 44px; }
+    @media (max-width: 560px) {
+      .wrap { padding: 16px 12px 96px; }
+      table { font-size: 14px; }
+      #publishBtn { position: sticky; bottom: 12px; width: 100%; z-index: 5; }
+    }
   </style>
 </head>
 <body>
@@ -98,6 +113,7 @@
     <h2 style="margin-bottom:14px;">👩‍🏫 Teachers — weekly timetables</h2>
     <div class="teacher-cards" id="teacherCards"></div>
     <p class="hint">Each class belongs to a batch. Students in that batch automatically see the class on their dashboard.</p>
+    <div id="teacherCalLinks" style="margin-top:16px;"></div>
   </div>
 
   <!-- ── Teacher editor ── -->
@@ -167,6 +183,7 @@
 
 </div>
 
+<script src="calendar-ics.js"></script>
 <script>
 var OWNER = 'sriteluguonlineclasses', REPO = 'sri-telugu-classes', PATH = 'students-data.js', BRANCH = 'main';
 var API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
@@ -276,10 +293,41 @@ function publish() {
     return r.json();
   }).then(function(j) {
     sha = j.content.sha;
+    status('Saved. Updating calendar feeds…', 'busy');
+    return publishCalendarFeeds();
+  }).then(function() {
     setDirty(false);
-    status('Published! The live site updates in about a minute.', 'ok');
+    status('Published! Live site updates in about a minute. Subscribed calendars refresh on phones within a few hours.', 'ok');
   }).catch(function(e) { status('Publish failed: ' + e.message, 'err'); })
     .finally(function() { btn.disabled = false; });
+}
+
+// PUT one file via the GitHub Contents API (creates or updates).
+function putFile(path, text, message) {
+  var url = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + path;
+  var headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+  return fetch(url + '?ref=' + BRANCH, { headers: headers })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(existing) {
+      var body = { message: message, content: b64enc(text), branch: BRANCH };
+      if (existing && existing.sha) body.sha = existing.sha;
+      return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body) })
+        .then(function(r) { if (!r.ok) return r.json().then(function(j) { throw new Error(j.message || ('GitHub error ' + r.status)); }); });
+    });
+}
+
+// Build and commit one .ics per batch and per teacher from the current data.
+function publishCalendarFeeds() {
+  var jobs = [];
+  STC_ICS.allBatches(data).forEach(function(batch) {
+    var cal = STC_ICS.buildICS(batch + ' — Sri Telugu Classes', STC_ICS.classesForBatch(data, batch));
+    jobs.push(putFile('calendars/batch-' + STC_ICS.slug(batch) + '.ics', cal, 'Admin: update calendar feed for ' + batch));
+  });
+  Object.keys(data.teachers || {}).forEach(function(t) {
+    var cal = STC_ICS.buildICS(t + ' — Teaching Schedule', STC_ICS.classesForTeacher(data, t));
+    jobs.push(putFile('calendars/teacher-' + STC_ICS.slug(t) + '.ics', cal, 'Admin: update calendar feed for ' + t));
+  });
+  return Promise.all(jobs);
 }
 
 // ── Teachers ──
@@ -300,6 +348,32 @@ function renderTeachers() {
     btn.querySelector('.tmeta').textContent = classes + ' class' + (classes === 1 ? '' : 'es') + ' per week';
     btn.onclick = function() { openTeacherEditor(name); };
     wrap.appendChild(btn);
+  });
+  renderTeacherCalLinks();
+}
+
+// Copyable iPhone-Calendar subscribe link per teacher (share once with each teacher).
+function renderTeacherCalLinks() {
+  var box = document.getElementById('teacherCalLinks');
+  if (!box) return;
+  var names = Object.keys(data.teachers || {});
+  if (!names.length) { box.innerHTML = ''; return; }
+  var base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
+  var html = '<p class="hint" style="margin-bottom:8px;"><strong>iPhone Calendar links</strong> — send each teacher their link; they open it once to subscribe.</p>';
+  names.forEach(function(name) {
+    var webcal = (base + 'calendars/teacher-' + STC_ICS.slug(name) + '.ics').replace(/^https?:\/\//, 'webcal://');
+    html += '<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.82rem;">' +
+      '<span style="min-width:64px;">' + name + '</span>' +
+      '<button class="btn-copy" data-link="' + webcal + '" style="min-height:40px;">Copy calendar link</button></div>';
+  });
+  box.innerHTML = html;
+  box.querySelectorAll('.btn-copy').forEach(function(b) {
+    b.onclick = function() {
+      navigator.clipboard.writeText(b.getAttribute('data-link')).then(function() {
+        b.textContent = 'Copied!';
+        setTimeout(function() { b.textContent = 'Copy calendar link'; }, 1500);
+      });
+    };
   });
 }
 

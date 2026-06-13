@@ -153,6 +153,10 @@
       <div class="schedule-list" id="scheduleList">
         <p style="color:var(--text-muted);font-size:.88rem;">Loading schedule…</p>
       </div>
+      <button id="addToCalBtn" class="btn" style="margin-top:14px;min-height:44px;">📅 Add my classes to iPhone Calendar</button>
+      <p id="addToCalHint" style="color:var(--text-muted);font-size:.82rem;margin-top:6px;">
+        Opens Apple Calendar to subscribe. Your classes stay updated automatically.
+      </p>
     </div>
 
     <!-- Notice board -->
@@ -195,6 +199,7 @@
 </script>
 <script src="students-data.js"></script>
 <script src="app.js"></script>
+<script src="calendar-ics.js"></script>
 <script>
   // ── Auth guard ──────────────────────────────────────
   var session = getSession();
@@ -319,6 +324,20 @@
   // Schedule & notices
   buildSchedule(session.schedule);
   buildNotices(session.notices);
+
+  // ── Add to iPhone Calendar (subscribe to this student's batch feed) ──
+  (function () {
+    var btn = document.getElementById('addToCalBtn');
+    if (!btn || !session || !session.batch || typeof STC_ICS === 'undefined') {
+      if (btn) btn.style.display = 'none';
+      return;
+    }
+    btn.addEventListener('click', function () {
+      var base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
+      var httpsUrl = base + 'calendars/batch-' + STC_ICS.slug(session.batch) + '.ics';
+      window.location.href = httpsUrl.replace(/^https?:\/\//, 'webcal://');
+    });
+  })();
 
   // ── Mobile sidebar ──────────────────────────────────
   var sidebar = document.getElementById('sidebar');
