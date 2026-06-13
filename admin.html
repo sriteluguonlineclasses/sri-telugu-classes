@@ -167,6 +167,7 @@
 
 </div>
 
+<script src="calendar-ics.js"></script>
 <script>
 var OWNER = 'sriteluguonlineclasses', REPO = 'sri-telugu-classes', PATH = 'students-data.js', BRANCH = 'main';
 var API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
@@ -276,10 +277,41 @@ function publish() {
     return r.json();
   }).then(function(j) {
     sha = j.content.sha;
+    status('Saved. Updating calendar feeds…', 'busy');
+    return publishCalendarFeeds();
+  }).then(function() {
     setDirty(false);
-    status('Published! The live site updates in about a minute.', 'ok');
+    status('Published! Live site updates in about a minute. Subscribed calendars refresh on phones within a few hours.', 'ok');
   }).catch(function(e) { status('Publish failed: ' + e.message, 'err'); })
     .finally(function() { btn.disabled = false; });
+}
+
+// PUT one file via the GitHub Contents API (creates or updates).
+function putFile(path, text, message) {
+  var url = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + path;
+  var headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+  return fetch(url + '?ref=' + BRANCH, { headers: headers })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(existing) {
+      var body = { message: message, content: b64enc(text), branch: BRANCH };
+      if (existing && existing.sha) body.sha = existing.sha;
+      return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body) })
+        .then(function(r) { if (!r.ok) return r.json().then(function(j) { throw new Error(j.message || ('GitHub error ' + r.status)); }); });
+    });
+}
+
+// Build and commit one .ics per batch and per teacher from the current data.
+function publishCalendarFeeds() {
+  var jobs = [];
+  STC_ICS.allBatches(data).forEach(function(batch) {
+    var cal = STC_ICS.buildICS(batch + ' — Sri Telugu Classes', STC_ICS.classesForBatch(data, batch));
+    jobs.push(putFile('calendars/batch-' + STC_ICS.slug(batch) + '.ics', cal, 'Admin: update calendar feed for ' + batch));
+  });
+  Object.keys(data.teachers || {}).forEach(function(t) {
+    var cal = STC_ICS.buildICS(t + ' — Teaching Schedule', STC_ICS.classesForTeacher(data, t));
+    jobs.push(putFile('calendars/teacher-' + STC_ICS.slug(t) + '.ics', cal, 'Admin: update calendar feed for ' + t));
+  });
+  return Promise.all(jobs);
 }
 
 // ── Teachers ──
