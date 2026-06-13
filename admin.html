@@ -98,6 +98,7 @@
     <h2 style="margin-bottom:14px;">👩‍🏫 Teachers — weekly timetables</h2>
     <div class="teacher-cards" id="teacherCards"></div>
     <p class="hint">Each class belongs to a batch. Students in that batch automatically see the class on their dashboard.</p>
+    <div id="teacherCalLinks" style="margin-top:16px;"></div>
   </div>
 
   <!-- ── Teacher editor ── -->
@@ -332,6 +333,32 @@ function renderTeachers() {
     btn.querySelector('.tmeta').textContent = classes + ' class' + (classes === 1 ? '' : 'es') + ' per week';
     btn.onclick = function() { openTeacherEditor(name); };
     wrap.appendChild(btn);
+  });
+  renderTeacherCalLinks();
+}
+
+// Copyable iPhone-Calendar subscribe link per teacher (share once with each teacher).
+function renderTeacherCalLinks() {
+  var box = document.getElementById('teacherCalLinks');
+  if (!box) return;
+  var names = Object.keys(data.teachers || {});
+  if (!names.length) { box.innerHTML = ''; return; }
+  var base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
+  var html = '<p class="hint" style="margin-bottom:8px;"><strong>iPhone Calendar links</strong> — send each teacher their link; they open it once to subscribe.</p>';
+  names.forEach(function(name) {
+    var webcal = (base + 'calendars/teacher-' + STC_ICS.slug(name) + '.ics').replace(/^https?:\/\//, 'webcal://');
+    html += '<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.82rem;">' +
+      '<span style="min-width:64px;">' + name + '</span>' +
+      '<button class="btn-copy" data-link="' + webcal + '" style="min-height:40px;">Copy calendar link</button></div>';
+  });
+  box.innerHTML = html;
+  box.querySelectorAll('.btn-copy').forEach(function(b) {
+    b.onclick = function() {
+      navigator.clipboard.writeText(b.getAttribute('data-link')).then(function() {
+        b.textContent = 'Copied!';
+        setTimeout(function() { b.textContent = 'Copy calendar link'; }, 1500);
+      });
+    };
   });
 }
 
