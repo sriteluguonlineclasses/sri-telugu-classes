@@ -451,7 +451,7 @@
     // ── Also log the lead to a Google Sheet (fire-and-forget) ──
     // Paste your deployed Apps Script Web App URL below. Setup: marketing/google-sheets-setup.md
     // Leave '' to disable. The email above is the reliable channel; the sheet is a best-effort copy.
-    var SHEETS_ENDPOINT = '';
+    var SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyTT--fb00jUeq7wEpnUdlVDMUC1a7VmxOmtZT1s2WAPVJOGDe1py387BCQVGqkAEvC-w/exec';
     if (SHEETS_ENDPOINT) {
       // No custom headers + string body = a "simple" CORS request (no preflight),
       // and no-cors means we don't need the script to return CORS headers.
