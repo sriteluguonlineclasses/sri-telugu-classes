@@ -676,10 +676,28 @@
     <form class="enrollment-form" id="enrollForm" novalidate aria-label="Enrollment form">
       <!-- Honeypot — invisible to humans; bots that fill it are silently dropped -->
       <input type="text" id="enrollCompany" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+      <input type="text" id="enrollName" name="name" placeholder="Your name" required autocomplete="name" aria-label="Your name" aria-describedby="nameError">
+      <span class="field-error-msg" id="nameError" role="alert">Please enter your name.</span>
       <input type="email" id="enrollEmail" name="email" placeholder="Email address" required autocomplete="email" aria-label="Email address" aria-describedby="emailError">
       <span class="field-error-msg" id="emailError" role="alert">Please enter a valid email address.</span>
-      <input type="tel" id="enrollPhone" name="phone" placeholder="Phone number (e.g. +1 555 000 0000)" autocomplete="tel" aria-label="Phone number" aria-describedby="phoneError">
+      <input type="tel" id="enrollPhone" name="phone" placeholder="WhatsApp / phone (e.g. +1 555 000 0000)" autocomplete="tel" aria-label="WhatsApp or phone number" aria-describedby="phoneError">
       <span class="field-error-msg" id="phoneError" role="alert">Please enter a valid phone number (digits, spaces, +, - only).</span>
+      <input type="text" id="enrollLocation" name="location" placeholder="City &amp; country (e.g. Dallas, USA)" autocomplete="address-level2" aria-label="City and country">
+      <select id="enrollLearner" name="learner" required aria-label="Who is learning?">
+        <option value="" disabled selected>Who is learning?</option>
+        <option value="My child">My child</option>
+        <option value="Myself (adult)">Myself (adult)</option>
+        <option value="My child and me">My child and me</option>
+      </select>
+      <input type="text" id="enrollAge" name="age" placeholder="Learner's age (optional)" inputmode="numeric" aria-label="Learner's age (optional)">
+      <select id="enrollCourse" name="course" required aria-label="Course of interest">
+        <option value="" disabled selected>Course of interest</option>
+        <option value="Telugu Basics">Telugu Basics — alphabet &amp; vocabulary</option>
+        <option value="Reading &amp; Writing">Reading &amp; Writing</option>
+        <option value="Spoken Telugu">Spoken Telugu — conversation</option>
+        <option value="Kids Special (5–12)">Kids Special (ages 5–12)</option>
+        <option value="Not sure yet">Not sure — help me choose</option>
+      </select>
       <button type="submit" class="btn btn-accent btn-lg">Get Free Trial →</button>
     </form>
     <p class="enrollment-note">No credit card required · Cancel anytime · First class free</p>

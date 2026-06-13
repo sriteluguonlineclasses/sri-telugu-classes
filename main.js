@@ -60,6 +60,8 @@
   var phoneInput = document.getElementById('enrollPhone');
   var emailError = document.getElementById('emailError');
   var phoneError = document.getElementById('phoneError');
+  var nameInput  = document.getElementById('enrollName');
+  var nameError  = document.getElementById('nameError');
 
   function isValidEmail(v) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
@@ -86,6 +88,15 @@
       errorEl.classList.add('visible');
     }
   }
+
+  nameInput.addEventListener('input', function() {
+    var v = nameInput.value.trim();
+    setFieldState(nameInput, nameError, v.length > 0, v.length > 0);
+  });
+  nameInput.addEventListener('blur', function() {
+    var v = nameInput.value.trim();
+    setFieldState(nameInput, nameError, v.length > 0, true);
+  });
 
   emailInput.addEventListener('input', function() {
     var v = emailInput.value.trim();
@@ -372,22 +383,33 @@
   // ── Enroll form — email notification via Web3Forms ──
   document.getElementById('enrollForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    var name  = nameInput.value.trim();
     var email = emailInput.value.trim();
     var phone = phoneInput.value.trim();
+    var location = (document.getElementById('enrollLocation') || {}).value || '';
+    var learner  = (document.getElementById('enrollLearner')  || {}).value || '';
+    var age      = (document.getElementById('enrollAge')      || {}).value || '';
+    var course   = (document.getElementById('enrollCourse')   || {}).value || '';
+    location = location.trim(); age = age.trim();
 
     // Validate on submit
+    var nameOk  = name.length > 0;
     var emailOk = email.length > 0 && isValidEmail(email);
     var phoneOk = isValidPhone(phone);
 
+    if (!nameOk) {
+      setFieldState(nameInput, nameError, false, true);
+      nameInput.focus();
+    }
     if (!emailOk) {
       emailError.textContent = email.length === 0 ? 'Email is required.' : 'Please enter a valid email address.';
       setFieldState(emailInput, emailError, false, true);
-      emailInput.focus();
+      if (nameOk) emailInput.focus();
     }
     if (!phoneOk) {
       setFieldState(phoneInput, phoneError, false, true);
     }
-    if (!emailOk || !phoneOk) return;
+    if (!nameOk || !emailOk || !phoneOk) return;
 
     // Honeypot tripped — pretend success, send nothing
     var honeypot = document.getElementById('enrollCompany');
@@ -406,11 +428,23 @@
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         access_key: '9f5b7aa0-f795-4602-80e6-aeee26c3082c',
-        subject:    'New Enrollment Request — Sri Telugu Classes',
+        subject:    'New Trial Request — ' + name + (location ? ' (' + location + ')' : ''),
         from_name:  'Sri Telugu Classes Website',
+        name:       name,
         email:      email,
         phone:      phone || 'Not provided',
-        message:    'New enrollment:\nEmail: ' + email + '\nPhone: ' + (phone || 'Not provided')
+        location:   location || 'Not provided',
+        learner:    learner || 'Not specified',
+        age:        age || 'Not provided',
+        course:     course || 'Not specified',
+        message:    'New free-trial request:\n' +
+                    'Name: ' + name + '\n' +
+                    'Email: ' + email + '\n' +
+                    'WhatsApp/Phone: ' + (phone || 'Not provided') + '\n' +
+                    'Location: ' + (location || 'Not provided') + '\n' +
+                    'Who is learning: ' + (learner || 'Not specified') + '\n' +
+                    'Learner age: ' + (age || 'Not provided') + '\n' +
+                    'Course of interest: ' + (course || 'Not specified')
       })
     });
 
@@ -418,6 +452,7 @@
       .then(function() {
         document.getElementById('enrollSuccess').style.display = 'block';
         document.getElementById('enrollForm').reset();
+        setFieldState(nameInput, nameError, false, false);
         setFieldState(emailInput, emailError, false, false);
         setFieldState(phoneInput, phoneError, false, false);
         btn.textContent = 'Get Free Trial →';

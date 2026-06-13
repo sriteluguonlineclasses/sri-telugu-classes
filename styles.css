@@ -1005,18 +1005,23 @@ h1, h2, h3, h4 { text-wrap: balance; }
   display: flex; flex-direction: column; gap: 12px;
   max-width: 420px; margin: 0 auto 14px;
 }
-.enrollment-form input {
+.enrollment-form input,
+.enrollment-form select {
   padding: 14px 20px; border-radius: 10px;
   border: 2px solid transparent; outline: none;
   font-size: .95rem; font-family: 'Poppins', sans-serif;
   color: var(--text);
+  background-color: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,.12);
   transition: box-shadow .2s, border-color .2s;
+  width: 100%; box-sizing: border-box;
 }
-.enrollment-form input:focus {
+.enrollment-form input:focus,
+.enrollment-form select:focus {
   box-shadow: 0 0 0 3px rgba(127,119,221,.45), 0 2px 8px rgba(0,0,0,.1);
 }
 .enrollment-form input::placeholder { color: var(--text-muted); }
+.enrollment-form select:invalid { color: var(--text-muted); }
 .enrollment-form .btn { width: 100%; justify-content: center; }
 .enrollment-note { font-size: .78rem; opacity: .65; }
 #enrollSuccess {
@@ -1025,11 +1030,13 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 
 /* Inline validation states */
-.enrollment-form input.field-error {
+.enrollment-form input.field-error,
+.enrollment-form select.field-error {
   border-color: #EF4444;
   box-shadow: 0 0 0 3px rgba(239,68,68,.18), 0 2px 8px rgba(0,0,0,.10);
 }
-.enrollment-form input.field-ok {
+.enrollment-form input.field-ok,
+.enrollment-form select.field-ok {
   border-color: #22C55E;
   box-shadow: 0 0 0 3px rgba(34,197,94,.15), 0 2px 8px rgba(0,0,0,.10);
 }
@@ -3772,12 +3779,21 @@ body,
   color: #fff;
   border-color: rgba(255,255,255,.20);
 }
-[data-theme="dark"] .enrollment-form input:focus {
-  background: rgba(255,255,255,.14);
+[data-theme="dark"] .enrollment-form select {
+  background-color: #2A2745;
+  color: #fff;
+  border-color: rgba(255,255,255,.20);
+}
+[data-theme="dark"] .enrollment-form input:focus,
+[data-theme="dark"] .enrollment-form select:focus {
+  background-color: #322E52;
   border-color: rgba(255,255,255,.45);
   box-shadow: 0 0 0 3px rgba(255,255,255,.10);
 }
 [data-theme="dark"] .enrollment-form input::placeholder {
+  color: rgba(255,255,255,.45);
+}
+[data-theme="dark"] .enrollment-form select:invalid {
   color: rgba(255,255,255,.45);
 }
 [data-theme="dark"] .enrollment-note {
