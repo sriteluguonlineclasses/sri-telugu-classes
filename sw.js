@@ -2,7 +2,7 @@
 // Strategy: network-first for everything (site updates often), falling back
 // to cache when offline. Core shell is pre-cached on install.
 
-var CACHE = 'stc-v1';
+var CACHE = 'stc-v2';
 var CORE = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ var CORE = [
   './main.js',
   './app.js',
   './students-data.js',
+  './calendar-ics.js',
   './favicon.svg',
   './hero-scene.svg',
   './icon-192.png'
